@@ -31,6 +31,11 @@
                 @if($videojuego->descripcion)
                     <p class="mt-4 text-gray-700">{{ $videojuego->descripcion }}</p>
                 @endif
+
+                {{-- Wishlist (Peña) --}}
+                <div class="mt-4">
+                    @include('wishlist._boton', ['videojuego' => $videojuego])
+                </div>
             </div>
         </div>
     </div>
@@ -38,7 +43,7 @@
     {{-- Requisitos PC --}}
     @if($videojuego->requisitosMinimosPC)
         <div class="bg-white rounded-lg shadow p-6 mt-6">
-            <h2 class="text-xl font-bold mb-4">Requisitos Mínimos PC</h2>
+            <h2 class="text-xl font-bold mb-4">{{ __('messages.requisitos') }}</h2>
             <div class="grid grid-cols-2 gap-3 text-sm">
                 @php $req = $videojuego->requisitosMinimosPC; @endphp
                 <div><span class="text-gray-500">SO:</span> {{ $req->sistema_operativo }}</div>

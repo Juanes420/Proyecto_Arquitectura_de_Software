@@ -17,6 +17,13 @@
                 <a href="{{ route('videojuegos.index') }}" class="hover:text-indigo-200">{{ __('messages.catalog') }}</a>
 
                 @auth
+                    <a href="{{ route('wishlist.index') }}" class="hover:text-indigo-200">
+                        ❤️ {{ __('messages.wishlist') }}
+                        @if(auth()->user()->wishlists->count())
+                            <span class="bg-pink-500 text-white text-xs px-2 py-0.5 rounded-full">{{ auth()->user()->wishlists->count() }}</span>
+                        @endif
+                    </a>
+
                     @if(auth()->user()->isAdmin())
                         <a href="{{ route('admin.dashboard') }}" class="hover:text-indigo-200">{{ __('messages.admin_panel') }}</a>
                     @endif

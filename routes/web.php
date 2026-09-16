@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoriaController as AdminCategoriaController;
+use App\Http\Controllers\Admin\RequisitosMinimosPcController as AdminRequisitosMinimosPcController;
+use App\Http\Controllers\Admin\VideoJuegoController as AdminVideoJuegoController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Admin\VideoJuegoController as AdminVideoJuegoController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\VideoJuegoController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 // ── Página principal ────────────────────────────────────
@@ -35,7 +38,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/resenas/{resena}', [ResenaController::class, 'update'])->name('resenas.update');
     Route::delete('/resenas/{resena}', [ResenaController::class, 'destroy'])->name('resenas.destroy');
 
-    // TODO: Wishlist routes (Peña)
+    // Wishlist (Peña)
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/{videojuego}', [WishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{videojuego}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
     // TODO: Pedidos routes (Bedoya)
 });
 
@@ -49,5 +56,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('videojuegos', AdminVideoJuegoController::class);
 
     // TODO: CRUD Tarjetas (Bedoya)
-    // TODO: CRUD Categorías (Peña)
+
+    // CRUD Categorías (Peña)
+    Route::resource('categorias', AdminCategoriaController::class);
+
+    // Requisitos mínimos PC (Peña) — no tiene vista show: se muestran
+    // en el detalle público del videojuego.
+    Route::resource('requisitos', AdminRequisitosMinimosPcController::class)
+        ->parameters(['requisitos' => 'requisito'])
+        ->except(['show']);
 });

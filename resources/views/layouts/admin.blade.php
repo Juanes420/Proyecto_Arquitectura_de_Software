@@ -22,6 +22,14 @@
                    class="block px-3 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.videojuegos.*') ? 'bg-gray-700' : '' }}">
                     🎮 {{ __('messages.manage_videojuegos') }}
                 </a>
+                <a href="{{ route('admin.categorias.index') }}"
+                   class="block px-3 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.categorias.*') ? 'bg-gray-700' : '' }}">
+                    🏷️ {{ __('messages.manage_categorias') }}
+                </a>
+                <a href="{{ route('admin.requisitos.index') }}"
+                   class="block px-3 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.requisitos.*') ? 'bg-gray-700' : '' }}">
+                    💻 {{ __('messages.manage_requisitos') }}
+                </a>
                 {{-- TODO: Tarjetas link (Bedoya) --}}
             </nav>
 
@@ -48,6 +56,14 @@
                 <div class="mx-6 mt-4">
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
                         {{ session('success') }}
+                    </div>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="mx-6 mt-4">
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        {{ session('error') }}
                     </div>
                 </div>
             @endif
