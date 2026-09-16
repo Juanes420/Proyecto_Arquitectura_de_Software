@@ -39,9 +39,13 @@
 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @forelse($videojuegos as $vj)
         <a href="{{ route('videojuegos.show', $vj) }}" class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden">
-            <div class="h-48 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-4xl">
-                🎮
-            </div>
+            @if($vj->imagen)
+                <img src="{{ asset('storage/' . $vj->imagen) }}" alt="{{ $vj->titulo }}" class="h-48 w-full object-cover">
+            @else
+                <div class="h-48 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-4xl">
+                    🎮
+                </div>
+            @endif
             <div class="p-4">
                 <h3 class="font-bold text-lg">{{ $vj->titulo }}</h3>
                 <p class="text-gray-500 text-sm">{{ $vj->plataforma }} · {{ $vj->categoria->nombre }}</p>

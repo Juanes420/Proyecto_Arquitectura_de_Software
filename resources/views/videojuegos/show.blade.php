@@ -8,9 +8,13 @@
 
     <div class="bg-white rounded-lg shadow p-6">
         <div class="md:flex gap-6">
-            <div class="w-full md:w-1/3 h-64 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-6xl mb-4 md:mb-0">
-                🎮
-            </div>
+            @if($videojuego->imagen)
+                <img src="{{ asset('storage/' . $videojuego->imagen) }}" alt="{{ $videojuego->titulo }}" class="w-full md:w-1/3 h-64 object-cover rounded-lg mb-4 md:mb-0">
+            @else
+                <div class="w-full md:w-1/3 h-64 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-6xl mb-4 md:mb-0">
+                    🎮
+                </div>
+            @endif
             <div class="flex-1">
                 <h1 class="text-3xl font-bold">{{ $videojuego->titulo }}</h1>
                 <p class="text-gray-500 mt-1">{{ $videojuego->plataforma }} · {{ $videojuego->categoria->nombre }}</p>
