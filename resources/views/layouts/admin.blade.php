@@ -30,7 +30,10 @@
                    class="block px-3 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.requisitos.*') ? 'bg-gray-700' : '' }}">
                     💻 {{ __('messages.manage_requisitos') }}
                 </a>
-                {{-- TODO: Tarjetas link (Bedoya) --}}
+                <a href="{{ route('admin.tarjetas.index') }}"
+                   class="block px-3 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.tarjetas.*') ? 'bg-gray-700' : '' }}">
+                    💳 {{ __('messages.manage_tarjetas') }}
+                </a>
             </nav>
 
             <div class="mt-auto pt-8">

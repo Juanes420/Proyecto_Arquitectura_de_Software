@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\TarjetaController as AdminTarjetaController;
 use App\Http\Controllers\Admin\CategoriaController as AdminCategoriaController;
 use App\Http\Controllers\Admin\RequisitosMinimosPcController as AdminRequisitosMinimosPcController;
 use App\Http\Controllers\Admin\VideoJuegoController as AdminVideoJuegoController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\VideoJuegoController;
 use App\Http\Controllers\WishlistController;
@@ -33,6 +35,7 @@ Route::get('/videojuegos/{videojuego}', [VideoJuegoController::class, 'show'])->
 
 // ── Rutas autenticadas (cliente) ────────────────────────
 Route::middleware('auth')->group(function () {
+
     // Reseñas
     Route::post('/videojuegos/{videojuego}/resenas', [ResenaController::class, 'store'])->name('resenas.store');
     Route::put('/resenas/{resena}', [ResenaController::class, 'update'])->name('resenas.update');
@@ -43,11 +46,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/wishlist/{videojuego}', [WishlistController::class, 'store'])->name('wishlist.store');
     Route::delete('/wishlist/{videojuego}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 
-    // TODO: Pedidos routes (Bedoya)
+    // Pedidos (Bedoya)
+    Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    Route::get('/pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
+    Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
+    Route::get('/pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
+    Route::patch('/pedidos/{pedido}/cancelar', [PedidoController::class, 'cancelar'])->name('pedidos.cancelar');
 });
 
 // ── Panel Admin ─────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
     Route::get('/', function () {
         return view('admin.dashboard');
     })->name('dashboard');
@@ -55,13 +64,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // CRUD Videojuegos (Admin)
     Route::resource('videojuegos', AdminVideoJuegoController::class);
 
-    // TODO: CRUD Tarjetas (Bedoya)
+    // CRUD Tarjetas (Bedoya)
+    Route::resource('tarjetas', AdminTarjetaController::class);
 
     // CRUD Categorías (Peña)
     Route::resource('categorias', AdminCategoriaController::class);
 
-    // Requisitos mínimos PC (Peña) — no tiene vista show: se muestran
-    // en el detalle público del videojuego.
+    // Requisitos mínimos PC (Peña) — no tiene vista show
     Route::resource('requisitos', AdminRequisitosMinimosPcController::class)
         ->parameters(['requisitos' => 'requisito'])
         ->except(['show']);

@@ -24,6 +24,8 @@
                         @endif
                     </a>
 
+                    <a href="{{ route('pedidos.index') }}" class="hover:text-indigo-200">📦 {{ __('messages.mis_pedidos') }}</a>
+
                     @if(auth()->user()->isAdmin())
                         <a href="{{ route('admin.dashboard') }}" class="hover:text-indigo-200">{{ __('messages.admin_panel') }}</a>
                     @endif

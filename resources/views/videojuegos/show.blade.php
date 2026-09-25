@@ -36,8 +36,16 @@
                     <p class="mt-4 text-gray-700">{{ $videojuego->descripcion }}</p>
                 @endif
 
-                {{-- Wishlist (Peña) --}}
-                <div class="mt-4">
+                {{-- Comprar (Bedoya) + Wishlist (Peña) --}}
+                <div class="mt-4 flex flex-wrap gap-2">
+                    @auth
+                        @if($videojuego->stock > 0)
+                            <a href="{{ route('pedidos.create', ['videojuego' => $videojuego->id]) }}"
+                               class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                                🛒 {{ __('messages.comprar') }}
+                            </a>
+                        @endif
+                    @endauth
                     @include('wishlist._boton', ['videojuego' => $videojuego])
                 </div>
             </div>
