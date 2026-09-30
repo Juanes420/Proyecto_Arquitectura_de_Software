@@ -66,6 +66,11 @@ class TarjetaController extends Controller
 
     public function destroy(Tarjeta $tarjeta)
     {
+        if ($tarjeta->detallePedidos()->exists()) {
+            return redirect()->route('admin.tarjetas.index')
+                ->with('error', __('messages.tarjeta_has_pedidos'));
+        }
+
         $tarjeta->delete();
 
         return redirect()->route('admin.tarjetas.index')

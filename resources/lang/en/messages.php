@@ -99,6 +99,7 @@ return [
     'tarjeta_created' => 'Gift card created successfully.',
     'tarjeta_updated' => 'Gift card updated successfully.',
     'tarjeta_deleted' => 'Gift card deleted successfully.',
+    'tarjeta_has_pedidos' => 'A gift card with associated orders cannot be deleted.',
 
     // Pedidos (Bedoya)
     'pedido' => 'Order',

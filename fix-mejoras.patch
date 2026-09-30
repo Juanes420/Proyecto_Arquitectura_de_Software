@@ -1,0 +1,151 @@
+From d04fffb650bc0de0c994b899eb4edf4871961797 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 30 Sep 2026 02:46:10 +0000
+Subject: [PATCH] fix: corregir N+1 en navbar, proteger borrado de tarjetas,
+ navbar responsive y seeder de pedidos
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01WybiC3HFTBMmpPbiE5Ca3R
+---
+ .../Controllers/Admin/TarjetaController.php   |  5 +++
+ database/seeders/DatabaseSeeder.php           | 41 +++++++++++++++++++
+ resources/lang/en/messages.php                |  1 +
+ resources/lang/es/messages.php                |  1 +
+ resources/views/layouts/app.blade.php         | 17 +++++---
+ 5 files changed, 60 insertions(+), 5 deletions(-)
+
+diff --git a/app/Http/Controllers/Admin/TarjetaController.php b/app/Http/Controllers/Admin/TarjetaController.php
+index cfbfcd4..72ba1d4 100644
+--- a/app/Http/Controllers/Admin/TarjetaController.php
++++ b/app/Http/Controllers/Admin/TarjetaController.php
+@@ -66,6 +66,11 @@ class TarjetaController extends Controller
+
+     public function destroy(Tarjeta $tarjeta)
+     {
++        if ($tarjeta->detallePedidos()->exists()) {
++            return redirect()->route('admin.tarjetas.index')
++                ->with('error', __('messages.tarjeta_has_pedidos'));
++        }
++
+         $tarjeta->delete();
+
+         return redirect()->route('admin.tarjetas.index')
+diff --git a/database/seeders/DatabaseSeeder.php b/database/seeders/DatabaseSeeder.php
+index f79f5f5..36320ca 100644
+--- a/database/seeders/DatabaseSeeder.php
++++ b/database/seeders/DatabaseSeeder.php
+@@ -4,6 +4,7 @@ namespace Database\Seeders;
+
+ use App\Models\Categoria;
+ use App\Models\Dlc;
++use App\Models\Pedido;
+ use App\Models\Resena;
+ use App\Models\Tarjeta;
+ use App\Models\User;
+@@ -61,5 +62,45 @@ class DatabaseSeeder extends Seeder
+                 ]);
+             }
+         });
++
++        $tarjetas = Tarjeta::all();
++        $estados = ['pendiente', 'procesando', 'completado', 'cancelado'];
++
++        $clientes->random(min(6, $clientes->count()))->each(function ($cliente) use ($videojuegos, $tarjetas, $estados) {
++            $numPedidos = rand(1, 3);
++            for ($i = 0; $i < $numPedidos; $i++) {
++                $pedido = Pedido::create([
++                    'usuario_id' => $cliente->id,
++                    'fecha' => now()->subDays(rand(1, 60)),
++                    'estado' => $estados[array_rand($estados)],
++                    'total' => 0,
++                ]);
++
++                $total = 0;
++                $juegosDelPedido = $videojuegos->random(min(rand(1, 3), $videojuegos->count()));
++                foreach ($juegosDelPedido as $juego) {
++                    $cantidad = rand(1, 2);
++                    $pedido->detalles()->create([
++                        'videojuego_id' => $juego->id,
++                        'cantidad' => $cantidad,
++                        'precio_unit' => $juego->precio,
++                    ]);
++                    $total += $juego->precio * $cantidad;
++                }
++
++                if ($tarjetas->count() && rand(0, 1)) {
++                    $tarjeta = $tarjetas->random();
++                    $cantidad = rand(1, 2);
++                    $pedido->detalles()->create([
++                        'tarjeta_id' => $tarjeta->id,
++                        'cantidad' => $cantidad,
++                        'precio_unit' => $tarjeta->precio,
++                    ]);
++                    $total += $tarjeta->precio * $cantidad;
++                }
++
++                $pedido->update(['total' => $total]);
++            }
++        });
+     }
+ }
+diff --git a/resources/lang/en/messages.php b/resources/lang/en/messages.php
+index d6d344a..af21c0a 100644
+--- a/resources/lang/en/messages.php
++++ b/resources/lang/en/messages.php
+@@ -99,6 +99,7 @@ return [
+     'tarjeta_created' => 'Gift card created successfully.',
+     'tarjeta_updated' => 'Gift card updated successfully.',
+     'tarjeta_deleted' => 'Gift card deleted successfully.',
++    'tarjeta_has_pedidos' => 'A gift card with associated orders cannot be deleted.',
+
+     // Pedidos (Bedoya)
+     'pedido' => 'Order',
+diff --git a/resources/lang/es/messages.php b/resources/lang/es/messages.php
+index b262712..ca340a2 100644
+--- a/resources/lang/es/messages.php
++++ b/resources/lang/es/messages.php
+@@ -99,6 +99,7 @@ return [
+     'tarjeta_created' => 'Tarjeta creada exitosamente.',
+     'tarjeta_updated' => 'Tarjeta actualizada exitosamente.',
+     'tarjeta_deleted' => 'Tarjeta eliminada exitosamente.',
++    'tarjeta_has_pedidos' => 'No se puede eliminar una tarjeta que tiene pedidos asociados.',
+
+     // Pedidos (Bedoya)
+     'pedido' => 'Pedido',
+diff --git a/resources/views/layouts/app.blade.php b/resources/views/layouts/app.blade.php
+index dc45284..d91e90c 100644
+--- a/resources/views/layouts/app.blade.php
++++ b/resources/views/layouts/app.blade.php
+@@ -9,18 +9,25 @@
+ </head>
+ <body class="bg-gray-100 min-h-screen">
+     {{-- Navbar --}}
+-    <nav class="bg-indigo-700 text-white shadow-lg">
++    <nav class="bg-indigo-700 text-white shadow-lg relative">
+         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+-            <a href="{{ route('home') }}" class="text-xl font-bold">🎮 GameVault</a>
++            <a href="{{ route('home') }}" class="text-xl font-bold shrink-0">🎮 GameVault</a>
+
+-            <div class="flex items-center gap-4">
++            <button onclick="document.getElementById('nav-menu').classList.toggle('hidden')" class="md:hidden p-1">
++                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
++                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
++                </svg>
++            </button>
++
++            <div id="nav-menu" class="hidden md:flex md:items-center md:gap-4 absolute md:static top-full left-0 right-0 bg-indigo-700 md:bg-transparent px-4 pb-4 md:p-0 flex-col md:flex-row gap-3 z-50">
+                 <a href="{{ route('videojuegos.index') }}" class="hover:text-indigo-200">{{ __('messages.catalog') }}</a>
+
+                 @auth
++                    @php $wishlistCount = auth()->user()->wishlists()->count(); @endphp
+                     <a href="{{ route('wishlist.index') }}" class="hover:text-indigo-200">
+                         ❤️ {{ __('messages.wishlist') }}
+-                        @if(auth()->user()->wishlists->count())
+-                            <span class="bg-pink-500 text-white text-xs px-2 py-0.5 rounded-full">{{ auth()->user()->wishlists->count() }}</span>
++                        @if($wishlistCount)
++                            <span class="bg-pink-500 text-white text-xs px-2 py-0.5 rounded-full">{{ $wishlistCount }}</span>
+                         @endif
+                     </a>
+
+--
+2.43.0

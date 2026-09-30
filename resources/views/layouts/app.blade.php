@@ -9,18 +9,25 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
     {{-- Navbar --}}
-    <nav class="bg-indigo-700 text-white shadow-lg">
+    <nav class="bg-indigo-700 text-white shadow-lg relative">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="{{ route('home') }}" class="text-xl font-bold">🎮 GameVault</a>
+            <a href="{{ route('home') }}" class="text-xl font-bold shrink-0">🎮 GameVault</a>
 
-            <div class="flex items-center gap-4">
+            <button onclick="document.getElementById('nav-menu').classList.toggle('hidden')" class="md:hidden p-1">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+
+            <div id="nav-menu" class="hidden md:flex md:items-center md:gap-4 absolute md:static top-full left-0 right-0 bg-indigo-700 md:bg-transparent px-4 pb-4 md:p-0 flex-col md:flex-row gap-3 z-50">
                 <a href="{{ route('videojuegos.index') }}" class="hover:text-indigo-200">{{ __('messages.catalog') }}</a>
 
                 @auth
+                    @php $wishlistCount = auth()->user()->wishlists()->count(); @endphp
                     <a href="{{ route('wishlist.index') }}" class="hover:text-indigo-200">
                         ❤️ {{ __('messages.wishlist') }}
-                        @if(auth()->user()->wishlists->count())
-                            <span class="bg-pink-500 text-white text-xs px-2 py-0.5 rounded-full">{{ auth()->user()->wishlists->count() }}</span>
+                        @if($wishlistCount)
+                            <span class="bg-pink-500 text-white text-xs px-2 py-0.5 rounded-full">{{ $wishlistCount }}</span>
                         @endif
                     </a>
 

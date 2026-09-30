@@ -99,6 +99,7 @@ return [
     'tarjeta_created' => 'Tarjeta creada exitosamente.',
     'tarjeta_updated' => 'Tarjeta actualizada exitosamente.',
     'tarjeta_deleted' => 'Tarjeta eliminada exitosamente.',
+    'tarjeta_has_pedidos' => 'No se puede eliminar una tarjeta que tiene pedidos asociados.',
 
     // Pedidos (Bedoya)
     'pedido' => 'Pedido',
