@@ -1,0 +1,7 @@
+*
+!.gitignore
+
+# Excepción: versionar las imágenes de videojuegos generadas por la API
+# de OpenAI para que todo el equipo las vea sin regenerarlas.
+!videojuegos/
+!videojuegos/**

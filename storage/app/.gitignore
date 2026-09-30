@@ -1,2 +1,6 @@
 *
 !.gitignore
+
+# Permitir descender al directorio public para versionar imágenes
+# (la excepción concreta está en public/.gitignore).
+!public/
