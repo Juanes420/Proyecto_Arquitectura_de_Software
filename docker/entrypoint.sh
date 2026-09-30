@@ -14,6 +14,12 @@ php artisan view:cache
 
 php artisan migrate --force
 
+USUARIOS="$(php artisan tinker --execute='echo \App\Models\User::count();' 2>/dev/null | tail -n 1)"
+if [ "$USUARIOS" = "0" ]; then
+    echo "==> Base de datos vacia, cargando datos de prueba"
+    php artisan db:seed --force || echo "==> El seed fallo, la app sigue arrancando"
+fi
+
 php artisan storage:link --force 2>/dev/null || true
 
 chown -R www-data:www-data storage bootstrap/cache
