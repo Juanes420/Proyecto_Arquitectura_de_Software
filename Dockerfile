@@ -30,7 +30,13 @@ RUN composer install \
     --optimize-autoloader
 
 COPY . .
-RUN composer dump-autoload --optimize
+RUN mkdir -p \
+        bootstrap/cache \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+    && composer dump-autoload --optimize
 
 # ============================================================
 # Stage 3 — Production image

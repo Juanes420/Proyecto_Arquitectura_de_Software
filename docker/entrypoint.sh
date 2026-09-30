@@ -1,27 +1,23 @@
 #!/bin/sh
 set -e
 
-echo "==> GameVault: Starting container..."
+echo "==> GameVault: iniciando contenedor"
 
-# Generate app key if not set
 if [ -z "$APP_KEY" ]; then
-    echo "==> Generating application key..."
-    php artisan key:generate --force
+    echo "==> APP_KEY no definida, generando una temporal (definela en Railway para que no cambie en cada deploy)"
+    export APP_KEY="$(php artisan key:generate --show)"
 fi
 
-# Cache configuration for production
-echo "==> Caching config, routes and views..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Run migrations
-echo "==> Running migrations..."
 php artisan migrate --force
 
-# Link storage
 php artisan storage:link --force 2>/dev/null || true
 
-echo "==> GameVault ready!"
+chown -R www-data:www-data storage bootstrap/cache
+
+echo "==> GameVault listo"
 
 exec "$@"
