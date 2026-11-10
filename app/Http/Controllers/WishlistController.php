@@ -18,7 +18,7 @@ class WishlistController extends Controller
     public function index(): View
     {
         $wishlists = Wishlist::with('videojuego.categoria')
-            ->where('usuario_id', Auth::id())
+            ->delUsuario(Auth::id())
             ->latest('fecha_agregado')
             ->get();
 
@@ -48,9 +48,7 @@ class WishlistController extends Controller
 
     public function destroy(VideoJuego $videojuego): RedirectResponse
     {
-        $wishlist = Wishlist::where('usuario_id', Auth::id())
-            ->where('videojuego_id', $videojuego->id)
-            ->first();
+        $wishlist = Wishlist::delUsuario(Auth::id())->delVideojuego($videojuego->id)->first();
 
         if (! $wishlist) {
             return back()->with('error', __('messages.wishlist_not_found'));

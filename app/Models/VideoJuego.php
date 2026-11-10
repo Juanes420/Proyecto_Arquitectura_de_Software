@@ -97,6 +97,26 @@ class VideoJuego extends Model
     public function getPromedioCalificacionAttribute(): ?float
     {
         $promedio = $this->resenas()->avg('calificacion');
+
         return $promedio ? round($promedio, 1) : null;
+    }
+
+    // Filtros del catalogo publico; cada uno se aplica solo si viene con valor.
+    public function scopeFiltrar(Builder $query, array $filtros): Builder
+    {
+        return $query
+            ->when($filtros['categoria'] ?? null, fn ($consulta, $categoria) => $consulta->where('categoria_id', $categoria))
+            ->when($filtros['plataforma'] ?? null, fn ($consulta, $plataforma) => $consulta->where('plataforma', $plataforma))
+            ->when($filtros['precio_min'] ?? null, fn ($consulta, $minimo) => $consulta->where('precio', '>=', $minimo))
+            ->when($filtros['precio_max'] ?? null, fn ($consulta, $maximo) => $consulta->where('precio', '<=', $maximo))
+            ->when($filtros['buscar'] ?? null, fn ($consulta, $texto) => $consulta->where('titulo', 'like', '%' . $texto . '%'));
+    }
+
+    // Videojuegos sin ficha de requisitos (relacion 1:1); $incluir mantiene el de la ficha que se esta editando.
+    public function scopeSinRequisitos(Builder $query, ?int $incluir = null): Builder
+    {
+        return $query->where(fn ($consulta) => $consulta
+            ->whereDoesntHave('requisitosMinimosPC')
+            ->when($incluir, fn ($sub) => $sub->orWhere('id', $incluir)));
     }
 }

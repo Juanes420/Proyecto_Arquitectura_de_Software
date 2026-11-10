@@ -2,27 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ResenaRequest;
 use App\Models\Resena;
 use App\Models\VideoJuego;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ResenaController extends Controller
 {
-    public function store(Request $request, VideoJuego $videojuego): RedirectResponse
+    public function store(ResenaRequest $request, VideoJuego $videojuego): RedirectResponse
     {
-        $validated = $request->validate([
-            'calificacion' => ['required', 'integer', 'min:1', 'max:5'],
-            'comentario' => ['nullable', 'string', 'max:1000'],
-        ]);
+        $validated = $request->validated();
 
-        // Verificar que el usuario no haya reseñado este juego antes
-        $existente = Resena::where('usuario_id', Auth::id())
-            ->where('videojuego_id', $videojuego->id)
-            ->first();
-
-        if ($existente) {
+        // Una sola reseña por usuario y videojuego
+        if (Resena::delUsuario(Auth::id())->delVideojuego($videojuego->id)->exists()) {
             return back()->with('error', __('messages.resena_exists'));
         }
 
@@ -30,34 +23,24 @@ class ResenaController extends Controller
             'usuario_id' => Auth::id(),
             'videojuego_id' => $videojuego->id,
             'calificacion' => $validated['calificacion'],
-            'comentario' => $validated['comentario'],
+            'comentario' => $validated['comentario'] ?? null,
         ]);
 
         return back()->with('success', __('messages.resena_created'));
     }
 
-    public function update(Request $request, Resena $resena): RedirectResponse
+    public function update(ResenaRequest $request, Resena $resena): RedirectResponse
     {
-        // Solo el dueño puede editar
-        if ($resena->usuario_id !== Auth::id()) {
-            abort(403);
-        }
+        abort_unless($resena->perteneceA(Auth::id()), 403);
 
-        $validated = $request->validate([
-            'calificacion' => ['required', 'integer', 'min:1', 'max:5'],
-            'comentario' => ['nullable', 'string', 'max:1000'],
-        ]);
-
-        $resena->update($validated);
+        $resena->update($request->validated());
 
         return back()->with('success', __('messages.resena_updated'));
     }
 
     public function destroy(Resena $resena): RedirectResponse
     {
-        if ($resena->usuario_id !== Auth::id()) {
-            abort(403);
-        }
+        abort_unless($resena->perteneceA(Auth::id()), 403);
 
         $resena->delete();
 

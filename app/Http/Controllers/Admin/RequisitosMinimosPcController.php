@@ -29,7 +29,7 @@ class RequisitosMinimosPcController extends Controller
 
     public function create(): View
     {
-        $videojuegos = $this->videojuegosSinRequisitos();
+        $videojuegos = VideoJuego::sinRequisitos()->orderBy('titulo')->get();
 
         return view('admin.requisitos.create', compact('videojuegos'));
     }
@@ -47,7 +47,7 @@ class RequisitosMinimosPcController extends Controller
     public function edit(RequisitosMinimosPc $requisito): View
     {
         $requisito->load('videojuego');
-        $videojuegos = $this->videojuegosSinRequisitos($requisito->videojuego_id);
+        $videojuegos = VideoJuego::sinRequisitos($requisito->videojuego_id)->orderBy('titulo')->get();
 
         return view('admin.requisitos.edit', compact('requisito', 'videojuegos'));
     }
@@ -68,17 +68,5 @@ class RequisitosMinimosPcController extends Controller
 
         return redirect()->route('admin.requisitos.index')
             ->with('success', __('messages.requisitos_deleted'));
-    }
-
-    /**
-     * Videojuegos disponibles para asociar. El $incluir permite que al editar
-     * siga apareciendo el videojuego que ya tiene asignada esta ficha.
-     */
-    private function videojuegosSinRequisitos(?int $incluir = null)
-    {
-        return VideoJuego::whereDoesntHave('requisitosMinimosPC')
-            ->when($incluir, fn ($query) => $query->orWhere('id', $incluir))
-            ->orderBy('titulo')
-            ->get();
     }
 }
