@@ -2,24 +2,25 @@
 
 /**
  * Autor: Juan David Bedoya
- * Pedidos del cliente autenticado (con sus detalles de videojuegos y tarjetas).
+ * Pedidos del cliente autenticado: confirmacion del carrito, historial y cancelacion.
  */
 
 namespace App\Http\Controllers;
 
 use App\Models\Pedido;
-use App\Models\Tarjeta;
-use App\Models\VideoJuego;
+use App\Services\CarritoService;
 use App\Services\PedidoService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class PedidoController extends Controller
 {
-    public function __construct(private readonly PedidoService $pedidos)
-    {
+    public function __construct(
+        private readonly PedidoService $pedidos,
+        private readonly CarritoService $carrito,
+    ) {
     }
 
     public function index(): View
@@ -32,25 +33,34 @@ class PedidoController extends Controller
         return view('pedidos.index', compact('pedidos'));
     }
 
-    public function create(Request $request): View
+    public function create(): View|RedirectResponse
     {
-        $videojuegos = VideoJuego::enStock()->orderBy('titulo')->get();
-        $tarjetas = Tarjeta::enStock()->orderBy('nombre')->get();
-        $preseleccionado = (int) $request->query('videojuego');
+        $items = $this->carrito->items();
 
-        return view('pedidos.create', compact('videojuegos', 'tarjetas', 'preseleccionado'));
+        if ($items->isEmpty()) {
+            return redirect()->route('carrito.index');
+        }
+
+        $total = $items->sum('subtotal');
+
+        return view('pedidos.create', compact('items', 'total'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(): RedirectResponse
     {
-        $validated = $request->validate([
-            'videojuegos' => ['nullable', 'array'],
-            'videojuegos.*' => ['nullable', 'integer', 'min:0', 'max:10'],
-            'tarjetas' => ['nullable', 'array'],
-            'tarjetas.*' => ['nullable', 'integer', 'min:0', 'max:10'],
-        ]);
+        if ($this->carrito->tieneAgotados()) {
+            return redirect()->route('carrito.index')->withErrors(['carrito' => __('messages.carrito_hay_agotados')]);
+        }
 
-        $pedido = $this->pedidos->crear(Auth::id(), $validated['videojuegos'] ?? [], $validated['tarjetas'] ?? []);
+        $productos = $this->carrito->porTipo();
+
+        try {
+            $pedido = $this->pedidos->crear(Auth::id(), $productos['videojuego'], $productos['tarjeta'], $productos['dlc']);
+        } catch (ValidationException $error) {
+            return redirect()->route('carrito.index')->withErrors($error->errors());
+        }
+
+        $this->carrito->vaciar();
 
         return redirect()->route('pedidos.show', $pedido)
             ->with('success', __('messages.pedido_created'));
@@ -60,7 +70,7 @@ class PedidoController extends Controller
     {
         $this->autorizar($pedido);
 
-        $pedido->load('detalles.videojuego', 'detalles.tarjeta');
+        $pedido->load('detalles.videojuego', 'detalles.tarjeta', 'detalles.dlc.videojuego');
 
         return view('pedidos.show', compact('pedido'));
     }

@@ -32,6 +32,8 @@
                                 <a href="{{ route('videojuegos.show', $detalle->videojuego) }}" class="font-medium hover:underline">{{ $detalle->videojuego->titulo }}</a>
                             @elseif($detalle->tarjeta)
                                 <span class="font-medium">{{ $detalle->tarjeta->nombre }}</span>
+                            @elseif($detalle->dlc)
+                                <a href="{{ route('videojuegos.show', $detalle->dlc->videojuego_id) }}" class="font-medium hover:underline">{{ $detalle->dlc->nombre }}</a>
                             @else
                                 <span class="text-muted">{{ __('messages.producto_eliminado') }}</span>
                             @endif
@@ -41,6 +43,8 @@
                                 <span class="inline-flex items-center gap-1.5"><x-icon name="game-controller" class="size-4" />{{ __('messages.videojuego') }}</span>
                             @elseif($detalle->tarjeta_id)
                                 <span class="inline-flex items-center gap-1.5"><x-icon name="credit-card" class="size-4" />{{ __('messages.tarjeta') }}</span>
+                            @elseif($detalle->dlc_id)
+                                <span class="inline-flex items-center gap-1.5"><x-icon name="plus" class="size-4" />{{ __('messages.dlc') }}</span>
                             @else
                                 -
                             @endif

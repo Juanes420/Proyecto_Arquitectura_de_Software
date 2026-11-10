@@ -18,25 +18,35 @@
                 <x-logo />
             </a>
 
-            <button type="button" class="ml-auto flex size-10 items-center justify-center rounded-md text-ink hover:bg-subtle lg:hidden"
+            <button type="button" class="ml-auto flex size-10 items-center justify-center rounded-md text-ink hover:bg-subtle xl:hidden"
                     aria-controls="nav-menu" aria-expanded="false" aria-label="{{ __('messages.open_menu') }}"
                     onclick="this.setAttribute('aria-expanded', !document.getElementById('nav-menu').classList.toggle('hidden'))">
                 <x-icon name="list" class="size-6" />
             </button>
 
-            <div id="nav-menu" class="absolute inset-x-0 top-full hidden flex-col gap-6 border-b border-line bg-canvas px-4 py-6 lg:static lg:flex lg:flex-1 lg:flex-row lg:items-center lg:justify-between lg:border-0 lg:bg-transparent lg:p-0">
-                <nav aria-label="{{ __('messages.main_navigation') }}" class="flex flex-col gap-1 lg:flex-row lg:gap-6">
+            <div id="nav-menu" class="absolute inset-x-0 top-full hidden flex-col gap-6 border-b border-line bg-canvas px-4 py-6 xl:static xl:flex xl:flex-1 xl:flex-row xl:items-center xl:justify-between xl:border-0 xl:bg-transparent xl:p-0">
+                <nav aria-label="{{ __('messages.main_navigation') }}" class="flex flex-col gap-1 xl:flex-row xl:gap-6">
                     <x-nav-link :href="route('videojuegos.index')" :active="request()->routeIs('videojuegos.*')">{{ __('messages.catalog') }}</x-nav-link>
+                    <x-nav-link :href="route('dlcs.index')" :active="request()->routeIs('dlcs.*')">{{ __('messages.dlc') }}</x-nav-link>
+                    <x-nav-link :href="route('tarjetas.index')" :active="request()->routeIs('tarjetas.*')">{{ __('messages.nav_tarjetas') }}</x-nav-link>
                     <x-nav-link :href="route('juegos-gratis.index')" :active="request()->routeIs('juegos-gratis.*')">{{ __('messages.juegos_gratis') }}</x-nav-link>
                     <x-nav-link :href="route('productos-aliados.index')" :active="request()->routeIs('productos-aliados.*')">{{ __('messages.productos_aliados') }}</x-nav-link>
                 </nav>
 
-                <div class="flex flex-col gap-1 border-t border-line pt-6 lg:flex-row lg:items-center lg:gap-2 lg:border-0 lg:pt-0">
+                <div class="flex flex-col gap-1 border-t border-line pt-6 xl:flex-row xl:items-center xl:gap-2 xl:border-0 xl:pt-0">
+                    <a href="{{ route('carrito.index') }}" title="{{ __('messages.carrito') }}" class="flex h-10 items-center gap-2 rounded-md px-2 text-sm text-muted transition-colors duration-200 ease-console hover:text-ink {{ request()->routeIs('carrito.*') ? 'text-ink' : '' }}"
+                       @if(request()->routeIs('carrito.*')) aria-current="page" @endif>
+                        <x-icon name="shopping-bag" class="size-5" />
+                        <span class="xl:sr-only">{{ __('messages.carrito') }}</span>
+                        @if($carritoCantidad)
+                            <span class="font-mono text-xs tabular-nums text-ink">{{ $carritoCantidad }}</span>
+                        @endif
+                    </a>
                     @auth
                         <a href="{{ route('wishlist.index') }}" class="flex h-10 items-center gap-2 rounded-md px-2 text-sm text-muted transition-colors duration-200 ease-console hover:text-ink {{ request()->routeIs('wishlist.*') ? 'text-ink' : '' }}"
                            @if(request()->routeIs('wishlist.*')) aria-current="page" @endif>
                             <x-icon name="heart" class="size-5" />
-                            <span class="lg:sr-only">{{ __('messages.wishlist') }}</span>
+                            <span class="xl:sr-only">{{ __('messages.wishlist') }}</span>
                             @if($wishlistCount)
                                 <span class="font-mono text-xs tabular-nums">{{ $wishlistCount }}</span>
                             @endif
@@ -44,17 +54,17 @@
                         <a href="{{ route('pedidos.index') }}" title="{{ __('messages.mis_pedidos') }}" class="flex h-10 items-center gap-2 rounded-md px-2 text-sm text-muted transition-colors duration-200 ease-console hover:text-ink {{ request()->routeIs('pedidos.*') ? 'text-ink' : '' }}"
                            @if(request()->routeIs('pedidos.*')) aria-current="page" @endif>
                             <x-icon name="package" class="size-5" />
-                            <span class="lg:sr-only">{{ __('messages.mis_pedidos') }}</span>
+                            <span class="xl:sr-only">{{ __('messages.mis_pedidos') }}</span>
                         </a>
                         @if(auth()->user()->isAdmin())
                             <a href="{{ route('admin.dashboard') }}" title="{{ __('messages.admin_panel') }}" class="flex h-10 items-center gap-2 rounded-md px-2 text-sm text-muted transition-colors duration-200 ease-console hover:text-ink">
                                 <x-icon name="squares-four" class="size-5" />
-                                <span class="lg:sr-only">{{ __('messages.admin_panel') }}</span>
+                                <span class="xl:sr-only">{{ __('messages.admin_panel') }}</span>
                             </a>
                         @endif
-                        <div class="flex items-center gap-2 px-2 text-sm text-muted lg:ml-2 lg:border-l lg:border-line lg:pl-4">
-                            <span class="max-w-40 truncate whitespace-nowrap lg:hidden xl:inline">{{ auth()->user()->nombre }}</span>
-                            <form action="{{ route('logout') }}" method="POST" class="ml-auto lg:ml-0">
+                        <div class="flex items-center gap-2 px-2 text-sm text-muted xl:ml-2 xl:border-l xl:border-line xl:pl-4">
+                            <span class="max-w-40 truncate whitespace-nowrap xl:hidden 2xl:inline">{{ auth()->user()->nombre }}</span>
+                            <form action="{{ route('logout') }}" method="POST" class="ml-auto xl:ml-0">
                                 @csrf
                                 <button type="submit" class="flex size-9 cursor-pointer items-center justify-center rounded-md text-muted hover:bg-subtle hover:text-ink"
                                         title="{{ __('auth.logout') }}" aria-label="{{ __('auth.logout') }}">
@@ -64,10 +74,10 @@
                         </div>
                     @else
                         <a href="{{ route('login') }}" class="flex h-10 items-center px-2 text-sm text-muted hover:text-ink">{{ __('auth.login') }}</a>
-                        <x-button :href="route('register')" size="sm" class="self-start lg:self-auto">{{ __('auth.register') }}</x-button>
+                        <x-button :href="route('register')" size="sm" class="self-start xl:self-auto">{{ __('auth.register') }}</x-button>
                     @endauth
 
-                    <x-locale-switcher class="mt-2 lg:ml-3 lg:mt-0" />
+                    <x-locale-switcher class="mt-2 xl:ml-3 xl:mt-0" />
                 </div>
             </div>
         </div>
@@ -80,6 +90,11 @@
         @if(session('error'))
             <x-alert type="error" class="mb-8">{{ session('error') }}</x-alert>
         @endif
+        @foreach(['carrito', 'productos'] as $campoError)
+            @error($campoError)
+                <x-alert type="error" class="mb-8">{{ $message }}</x-alert>
+            @enderror
+        @endforeach
 
         @yield('content')
     </main>
@@ -94,6 +109,8 @@
                 <h2 class="gv-label text-muted">{{ __('messages.footer_store') }}</h2>
                 <ul class="mt-4 space-y-2.5 text-sm">
                     <li><a href="{{ route('videojuegos.index') }}" class="text-ink/80 hover:text-ink">{{ __('messages.catalog') }}</a></li>
+                    <li><a href="{{ route('dlcs.index') }}" class="text-ink/80 hover:text-ink">{{ __('messages.dlc') }}</a></li>
+                    <li><a href="{{ route('tarjetas.index') }}" class="text-ink/80 hover:text-ink">{{ __('messages.nav_tarjetas') }}</a></li>
                     <li><a href="{{ route('juegos-gratis.index') }}" class="text-ink/80 hover:text-ink">{{ __('messages.juegos_gratis') }}</a></li>
                     <li><a href="{{ route('productos-aliados.index') }}" class="text-ink/80 hover:text-ink">{{ __('messages.productos_aliados') }}</a></li>
                 </ul>

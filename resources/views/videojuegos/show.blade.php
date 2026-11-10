@@ -37,15 +37,12 @@
         </div>
 
         <div class="mt-6 flex flex-wrap gap-3">
+            @if($videojuego->stock > 0)
+                <x-add-to-cart tipo="videojuego" :id="$videojuego->id" comprar size="lg" />
+                <x-add-to-cart tipo="videojuego" :id="$videojuego->id" size="lg" icon="shopping-bag" />
+            @endif
             @auth
-                @if($videojuego->stock > 0)
-                    <x-button :href="route('pedidos.create', ['videojuego' => $videojuego->id])" size="lg" icon="shopping-bag">
-                        {{ __('messages.comprar') }}
-                    </x-button>
-                @endif
                 @include('wishlist._boton', ['videojuego' => $videojuego])
-            @else
-                <x-button :href="route('login')" size="lg">{{ __('auth.login') }}</x-button>
             @endauth
         </div>
 
@@ -82,17 +79,9 @@
 @if($videojuego->dlcs->isNotEmpty())
     <section class="mt-20" aria-labelledby="dlcs">
         <h2 id="dlcs" class="text-2xl font-semibold tracking-[-0.02em]">{{ __('messages.dlcs') }}</h2>
-        <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+        <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @foreach($videojuego->dlcs as $dlc)
-                <li class="flex items-start justify-between gap-6 rounded-md border border-line bg-surface p-5">
-                    <div>
-                        <p class="font-medium">{{ $dlc->nombre }}</p>
-                        @if($dlc->descripcion)
-                            <p class="mt-1 text-sm leading-relaxed text-muted">{{ $dlc->descripcion }}</p>
-                        @endif
-                    </div>
-                    <x-price :value="$dlc->precio" class="text-[15px]" />
-                </li>
+                <li>@include('dlcs._tarjeta', ['dlc' => $dlc])</li>
             @endforeach
         </ul>
     </section>

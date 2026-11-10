@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Contracts\ProductosAliadosService;
 use App\Services\ProductosAliados\ProductosAliadosApi;
+use App\Services\CarritoService;
 use App\Services\ProductosAliados\ProductosAliadosLocal;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('layouts.app', function ($view) {
             $view->with('wishlistCount', auth()->check() ? auth()->user()->wishlists()->count() : 0);
+            $view->with('carritoCantidad', app(CarritoService::class)->cantidad());
         });
     }
 }
