@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\JuegosGratisController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\ProductosAliadosController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\VideoJuegoController;
 use App\Http\Controllers\WishlistController;
@@ -34,6 +35,7 @@ Route::post('/logout', [LoginController::class, 'logout'])
 Route::get('/videojuegos', [VideoJuegoController::class, 'index'])->name('videojuegos.index');
 Route::get('/videojuegos/{videojuego}', [VideoJuegoController::class, 'show'])->name('videojuegos.show');
 Route::get('/juegos-gratis', [JuegosGratisController::class, 'index'])->name('juegos-gratis.index');
+Route::get('/productos-aliados', [ProductosAliadosController::class, 'index'])->name('productos-aliados.index');
 
 // ── Rutas autenticadas (cliente) ────────────────────────
 Route::middleware('auth')->group(function () {

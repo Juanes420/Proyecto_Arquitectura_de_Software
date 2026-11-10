@@ -24,5 +24,9 @@ return [
     'freetogame' => [
         'url' => env('FREETOGAME_URL', 'https://www.freetogame.com/api'),
     ],
+    'aliados' => [
+        'url' => env('ALIADOS_API_URL'),
+        'nombre' => env('ALIADOS_NOMBRE', 'Grupo 9'),
+    ],
 
 ];
