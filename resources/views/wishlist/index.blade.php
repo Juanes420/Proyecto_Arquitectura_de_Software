@@ -17,7 +17,7 @@
             <li class="flex flex-wrap items-center gap-5 py-5">
                 <a href="{{ route('videojuegos.show', $videojuego) }}" class="group shrink-0 rounded-md">
                     <x-cover :src="$videojuego->imagen_url" :alt="$videojuego->titulo"
-                             class="aspect-[4/3] w-28 rounded-md sm:w-36" />
+                             class="aspect-[2/3] w-20 rounded-md sm:w-24" />
                 </a>
                 <div class="min-w-0 flex-1">
                     <p class="text-[12px] text-muted">{{ $videojuego->plataforma }} · {{ $videojuego->categoria->nombre }}</p>

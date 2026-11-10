@@ -53,7 +53,7 @@
         <x-button :href="route('videojuegos.index')" variant="secondary">{{ __('messages.clear_filters') }}</x-button>
     </x-empty-state>
 @else
-    <div class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div class="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         @foreach($videojuegos as $videojuego)
             <x-game-tile :videojuego="$videojuego" />
         @endforeach

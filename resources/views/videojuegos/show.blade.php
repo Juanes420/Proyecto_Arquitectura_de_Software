@@ -8,11 +8,11 @@
     {{ __('messages.catalog') }}
 </a>
 
-<article class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14">
+<article class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-14">
     {{-- Marco doble: bandeja exterior y portada interior. --}}
-    <div class="self-start rounded-md border border-line bg-subtle p-1.5">
+    <div class="w-full max-w-sm self-start rounded-md border border-line bg-subtle p-1.5 lg:max-w-none">
         <x-cover :src="$videojuego->imagen_url" :alt="$videojuego->titulo"
-                 :eager="true" class="aspect-[4/5] rounded-[4px]" />
+                 :eager="true" class="aspect-[2/3] rounded-[4px]" />
     </div>
 
     <div class="flex flex-col">
