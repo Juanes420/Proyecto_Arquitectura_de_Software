@@ -10,10 +10,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RequisitosMinimosPcRequest;
 use App\Models\RequisitosMinimosPc;
 use App\Models\VideoJuego;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class RequisitosMinimosPcController extends Controller
@@ -34,17 +34,9 @@ class RequisitosMinimosPcController extends Controller
         return view('admin.requisitos.create', compact('videojuegos'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(RequisitosMinimosPcRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'videojuego_id' => ['required', 'exists:videojuegos,id', 'unique:requisitos_minimos_pc,videojuego_id'],
-            'sistema_operativo' => ['required', 'string', 'max:255'],
-            'procesador' => ['required', 'string', 'max:255'],
-            'memoria_ram' => ['required', 'string', 'max:255'],
-            'tarjeta_grafica' => ['required', 'string', 'max:255'],
-            'almacenamiento' => ['required', 'string', 'max:255'],
-            'directx' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $request->validated();
 
         RequisitosMinimosPc::create($validated);
 
@@ -60,21 +52,9 @@ class RequisitosMinimosPcController extends Controller
         return view('admin.requisitos.edit', compact('requisito', 'videojuegos'));
     }
 
-    public function update(Request $request, RequisitosMinimosPc $requisito): RedirectResponse
+    public function update(RequisitosMinimosPcRequest $request, RequisitosMinimosPc $requisito): RedirectResponse
     {
-        $validated = $request->validate([
-            'videojuego_id' => [
-                'required',
-                'exists:videojuegos,id',
-                'unique:requisitos_minimos_pc,videojuego_id,' . $requisito->id,
-            ],
-            'sistema_operativo' => ['required', 'string', 'max:255'],
-            'procesador' => ['required', 'string', 'max:255'],
-            'memoria_ram' => ['required', 'string', 'max:255'],
-            'tarjeta_grafica' => ['required', 'string', 'max:255'],
-            'almacenamiento' => ['required', 'string', 'max:255'],
-            'directx' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $request->validated();
 
         $requisito->update($validated);
 

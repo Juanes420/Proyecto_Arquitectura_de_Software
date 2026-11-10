@@ -8,9 +8,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoriaRequest;
 use App\Models\Categoria;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CategoriaController extends Controller
@@ -29,12 +29,9 @@ class CategoriaController extends Controller
         return view('admin.categorias.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(CategoriaRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:255', 'unique:categorias,nombre'],
-            'descripcion' => ['nullable', 'string', 'max:1000'],
-        ]);
+        $validated = $request->validated();
 
         Categoria::create($validated);
 
@@ -54,12 +51,9 @@ class CategoriaController extends Controller
         return view('admin.categorias.edit', compact('categoria'));
     }
 
-    public function update(Request $request, Categoria $categoria): RedirectResponse
+    public function update(CategoriaRequest $request, Categoria $categoria): RedirectResponse
     {
-        $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:255', 'unique:categorias,nombre,' . $categoria->id],
-            'descripcion' => ['nullable', 'string', 'max:1000'],
-        ]);
+        $validated = $request->validated();
 
         $categoria->update($validated);
 
