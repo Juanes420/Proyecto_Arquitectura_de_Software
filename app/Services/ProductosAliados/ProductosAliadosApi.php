@@ -19,13 +19,11 @@ class ProductosAliadosApi implements ProductosAliadosService
         'enlace' => ['enlace', 'link', 'url'],
     ];
 
-    public function __construct(private readonly string $url)
-    {
-    }
+    public function __construct(private readonly string $url) {}
 
     public function obtener(): array
     {
-        $cacheKey = 'aliados.'.md5($this->url);
+        $cacheKey = 'aliados.' . md5($this->url);
         $productos = Cache::get($cacheKey);
 
         if ($productos === null) {
@@ -60,7 +58,7 @@ class ProductosAliadosApi implements ProductosAliadosService
 
         return array_values(array_filter(array_map(
             fn ($item) => is_array($item) ? $this->normalizar($item) : null,
-            $items
+            $items,
         )));
     }
 

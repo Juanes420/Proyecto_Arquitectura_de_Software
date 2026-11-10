@@ -144,7 +144,7 @@ class CarritoService
     {
         return array_filter(
             array_intersect_key(session(self::CLAVE, []), self::TIPOS),
-            fn (array $cantidades) => $cantidades !== []
+            fn (array $cantidades) => $cantidades !== [],
         );
     }
 

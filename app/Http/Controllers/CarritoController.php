@@ -9,9 +9,7 @@ use Illuminate\View\View;
 
 class CarritoController extends Controller
 {
-    public function __construct(private readonly CarritoService $carrito)
-    {
-    }
+    public function __construct(private readonly CarritoService $carrito) {}
 
     public function index(): View
     {

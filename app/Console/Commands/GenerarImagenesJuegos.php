@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 class GenerarImagenesJuegos extends Command
 {
     protected $signature = 'juegos:generar-imagenes {--force : Regenerar imagenes existentes}';
+
     protected $description = 'Genera imagenes para videojuegos usando OpenAI GPT Image 1';
 
     public function handle(): int
@@ -19,6 +20,7 @@ class GenerarImagenesJuegos extends Command
 
         if (! $apiKey) {
             $this->error('Falta OPENAI_API_KEY en el archivo .env');
+
             return self::FAILURE;
         }
 
@@ -26,6 +28,7 @@ class GenerarImagenesJuegos extends Command
 
         if ($juegos->isEmpty()) {
             $this->warn('No hay videojuegos en la base de datos. Ejecuta primero: php artisan db:seed');
+
             return self::SUCCESS;
         }
 
@@ -41,13 +44,14 @@ class GenerarImagenesJuegos extends Command
             if ($juego->imagen && ! $this->option('force')) {
                 $omitidas++;
                 $bar->advance();
+
                 continue;
             }
 
             $prompt = "Video game cover art for a game called \"{$juego->titulo}\". "
                 . "Genre: {$juego->categoria->nombre}. "
-                . "Professional game cover design, vibrant colors, high quality digital art, "
-                . "no text or letters on the image.";
+                . 'Professional game cover design, vibrant colors, high quality digital art, '
+                . 'no text or letters on the image.';
 
             try {
                 $response = Http::withHeaders([
@@ -65,6 +69,7 @@ class GenerarImagenesJuegos extends Command
                     $this->error("Error en \"{$juego->titulo}\": {$error}");
                     $errores++;
                     $bar->advance();
+
                     continue;
                 }
 
@@ -82,6 +87,7 @@ class GenerarImagenesJuegos extends Command
                     $this->error("No se pudo obtener imagen para \"{$juego->titulo}\"");
                     $errores++;
                     $bar->advance();
+
                     continue;
                 }
 

@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Contracts\ProductosAliadosService;
-use App\Services\ProductosAliados\ProductosAliadosApi;
 use App\Services\CarritoService;
+use App\Services\ProductosAliados\ProductosAliadosApi;
 use App\Services\ProductosAliados\ProductosAliadosLocal;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProductosAliadosService::class, function () {
             $url = config('services.aliados.url');
 
-            return $url ? new ProductosAliadosApi($url) : new ProductosAliadosLocal();
+            return $url ? new ProductosAliadosApi($url) : new ProductosAliadosLocal;
         });
     }
 

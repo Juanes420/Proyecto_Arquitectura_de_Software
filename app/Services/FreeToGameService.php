@@ -30,7 +30,7 @@ class FreeToGameService
     private function consultar(): array
     {
         try {
-            $respuesta = Http::timeout(10)->get(config('services.freetogame.url').'/games', [
+            $respuesta = Http::timeout(10)->get(config('services.freetogame.url') . '/games', [
                 'sort-by' => 'popularity',
             ]);
         } catch (Throwable) {
