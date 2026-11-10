@@ -148,4 +148,9 @@ return [
     'productos_aliados_local' => 'Mostrando datos de respaldo: el servicio del aliado aún no está configurado.',
     'productos_aliados_no_disponible' => 'El servicio de nuestro aliado no responde en este momento. Intenta más tarde.',
     'ver_producto' => 'Ver producto',
+
+    // Estado de stock
+    'disponible' => 'Disponible',
+    'agotado' => 'Agotado',
+    'directx_placeholder' => 'Versión 12',
 ];

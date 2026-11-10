@@ -148,4 +148,9 @@ return [
     'productos_aliados_local' => 'Showing fallback data: the partner service is not configured yet.',
     'productos_aliados_no_disponible' => 'Our partner service is not responding right now. Please try again later.',
     'ver_producto' => 'View product',
+
+    // Estado de stock
+    'disponible' => 'Available',
+    'agotado' => 'Out of stock',
+    'directx_placeholder' => 'Version 12',
 ];

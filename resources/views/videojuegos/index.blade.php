@@ -52,9 +52,9 @@
                 <div class="flex justify-between items-center mt-2">
                     <span class="text-xl font-bold text-green-600">${{ number_format($vj->precio, 2) }}</span>
                     @if($vj->stock > 0)
-                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">En stock</span>
+                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">{{ __('messages.disponible') }}</span>
                     @else
-                        <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">Agotado</span>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">{{ __('messages.agotado') }}</span>
                     @endif
                 </div>
             </div>
