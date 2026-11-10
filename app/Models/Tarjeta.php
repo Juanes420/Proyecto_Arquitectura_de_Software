@@ -32,11 +32,24 @@ class Tarjeta extends Model
 
     private const IMAGEN_STEAM = 'https://store.fastly.steamstatic.com/public/images/gift/digital_cards_preview.png';
 
-    // Steam publica la imagen de sus tarjetas; las de otras plataformas se dibujan en la vista si no tienen imagen.
+    // Imagen propia si el admin la puso; si no, la imagen oficial de la plataforma (Nintendo tiene una por monto).
     protected function imagenUrl(): Attribute
     {
-        return Attribute::get(fn () => $this->imagen
-            ?: (Str::contains(Str::lower($this->plataforma . ' ' . $this->nombre), 'steam') ? self::IMAGEN_STEAM : null));
+        return Attribute::get(function () {
+            if ($this->imagen) {
+                return $this->imagen;
+            }
+
+            $plataforma = Str::lower($this->plataforma . ' ' . $this->nombre);
+
+            return match (true) {
+                Str::contains($plataforma, 'steam') => self::IMAGEN_STEAM,
+                Str::contains($plataforma, 'xbox') => asset('img/tarjetas/xbox.jpg'),
+                Str::contains($plataforma, 'playstation') => asset('img/tarjetas/playstation.png'),
+                Str::contains($plataforma, 'nintendo') && in_array((int) $this->precio, [100, 200], true) => asset('img/tarjetas/nintendo-' . (int) $this->precio . '.jpg'),
+                default => null,
+            };
+        });
     }
 
     // ── Relaciones ──────────────────────────────────────
