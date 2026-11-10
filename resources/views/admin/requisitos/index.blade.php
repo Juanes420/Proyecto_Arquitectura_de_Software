@@ -3,50 +3,42 @@
 
 @section('header', __('messages.manage_requisitos'))
 
+@section('actions')
+    <x-button :href="route('admin.requisitos.create')" icon="plus">{{ __('messages.create') }} {{ __('messages.requisitos') }}</x-button>
+@endsection
+
 @section('content')
-<div class="mb-4">
-    <a href="{{ route('admin.requisitos.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-        + {{ __('messages.create') }} {{ __('messages.requisitos') }}
-    </a>
-</div>
-
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <table class="w-full text-left">
-        <thead class="bg-gray-50 border-b">
-            <tr>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.videojuego') }}</th>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.sistema_operativo') }}</th>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.procesador') }}</th>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.memoria_ram') }}</th>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.actions') }}</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y">
-            @forelse($requisitos as $requisito)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-medium">{{ $requisito->videojuego->titulo }}</td>
-                    <td class="px-6 py-4">{{ $requisito->sistema_operativo }}</td>
-                    <td class="px-6 py-4">{{ $requisito->procesador }}</td>
-                    <td class="px-6 py-4">{{ $requisito->memoria_ram }}</td>
-                    <td class="px-6 py-4 flex gap-2">
-                        <a href="{{ route('admin.requisitos.edit', $requisito) }}" class="text-yellow-600 hover:underline">{{ __('messages.edit') }}</a>
-                        <form action="{{ route('admin.requisitos.destroy', $requisito) }}" method="POST" class="inline"
-                              onsubmit="return confirm('{{ __('messages.confirm_delete') }}')">
-                            @csrf @method('DELETE')
-                            <button class="text-red-600 hover:underline">{{ __('messages.delete') }}</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
+@if($requisitos->isEmpty())
+    <x-empty-state icon="desktop-tower" :title="__('messages.no_results')" />
+@else
+    <x-card class="overflow-x-auto">
+        <table class="gv-table">
+            <thead>
                 <tr>
-                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">{{ __('messages.no_results') }}</td>
+                    <th scope="col">{{ __('messages.videojuego') }}</th>
+                    <th scope="col">{{ __('messages.sistema_operativo') }}</th>
+                    <th scope="col">{{ __('messages.procesador') }}</th>
+                    <th scope="col">{{ __('messages.memoria_ram') }}</th>
+                    <th scope="col"><span class="sr-only">{{ __('messages.actions') }}</span></th>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach($requisitos as $requisito)
+                    <tr>
+                        <td class="font-medium">{{ $requisito->videojuego->titulo }}</td>
+                        <td class="text-muted">{{ $requisito->sistema_operativo }}</td>
+                        <td class="text-muted">{{ $requisito->procesador }}</td>
+                        <td class="whitespace-nowrap text-muted">{{ $requisito->memoria_ram }}</td>
+                        <td>
+                            <x-row-actions :edit="route('admin.requisitos.edit', $requisito)" :destroy="route('admin.requisitos.destroy', $requisito)"
+                                           :nombre="$requisito->videojuego->titulo" />
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </x-card>
 
-<div class="mt-4">
-    {{ $requisitos->links() }}
-</div>
+    <div class="mt-8">{{ $requisitos->links() }}</div>
+@endif
 @endsection

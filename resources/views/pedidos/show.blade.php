@@ -4,80 +4,67 @@
 @section('title', __('messages.pedido') . ' #' . $pedido->id . ' - GameVault')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <a href="{{ route('pedidos.index') }}" class="text-indigo-600 hover:underline mb-4 inline-block">← {{ __('messages.back') }}</a>
+<x-page-header :title="__('messages.pedido') . ' #' . $pedido->id" :back="route('pedidos.index')"
+               :description="__('messages.fecha') . ': ' . $pedido->fecha->format('d/m/Y H:i')">
+    <x-slot:actions>
+        @include('pedidos._estado', ['estado' => $pedido->estado])
+    </x-slot:actions>
+</x-page-header>
 
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="flex flex-wrap items-start justify-between gap-4">
-            <div>
-                <h1 class="text-3xl font-bold">{{ __('messages.pedido') }} #{{ $pedido->id }}</h1>
-                <p class="text-gray-500 mt-1">{{ __('messages.fecha') }}: {{ $pedido->fecha->format('d/m/Y H:i') }}</p>
-            </div>
-            <div class="text-right">
-                @include('pedidos._estado', ['estado' => $pedido->estado])
-                <p class="text-3xl font-bold text-green-600 mt-2">${{ number_format($pedido->total, 2) }}</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
-        <h2 class="text-xl font-bold p-4 border-b">{{ __('messages.detalle_pedido') }}</h2>
-        <table class="w-full text-left">
-            <thead class="bg-gray-50">
+<div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+    <x-card class="overflow-x-auto">
+        <h2 class="px-5 pt-5 text-base font-medium">{{ __('messages.detalle_pedido') }}</h2>
+        <table class="gv-table mt-3">
+            <thead>
                 <tr>
-                    <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.producto') }}</th>
-                    <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.tipo') }}</th>
-                    <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.cantidad') }}</th>
-                    <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.precio_unit') }}</th>
-                    <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.subtotal') }}</th>
+                    <th scope="col">{{ __('messages.producto') }}</th>
+                    <th scope="col">{{ __('messages.tipo') }}</th>
+                    <th scope="col" class="text-right">{{ __('messages.cantidad') }}</th>
+                    <th scope="col" class="text-right">{{ __('messages.precio_unit') }}</th>
+                    <th scope="col" class="text-right">{{ __('messages.subtotal') }}</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
+            <tbody>
                 @foreach($pedido->detalles as $detalle)
                     <tr>
-                        <td class="px-6 py-4">
+                        <td>
                             @if($detalle->videojuego)
-                                <a href="{{ route('videojuegos.show', $detalle->videojuego) }}" class="text-indigo-700 hover:underline">
-                                    {{ $detalle->videojuego->titulo }}
-                                </a>
+                                <a href="{{ route('videojuegos.show', $detalle->videojuego) }}" class="font-medium hover:underline">{{ $detalle->videojuego->titulo }}</a>
                             @elseif($detalle->tarjeta)
-                                {{ $detalle->tarjeta->nombre }}
+                                <span class="font-medium">{{ $detalle->tarjeta->nombre }}</span>
                             @else
-                                <span class="text-gray-400">{{ __('messages.producto_eliminado') }}</span>
+                                <span class="text-muted">{{ __('messages.producto_eliminado') }}</span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 text-gray-500">
+                        <td class="text-muted">
                             @if($detalle->videojuego_id)
-                                🎮 {{ __('messages.videojuego') }}
+                                <span class="inline-flex items-center gap-1.5"><x-icon name="game-controller" class="size-4" />{{ __('messages.videojuego') }}</span>
                             @elseif($detalle->tarjeta_id)
-                                💳 {{ __('messages.tarjeta') }}
+                                <span class="inline-flex items-center gap-1.5"><x-icon name="credit-card" class="size-4" />{{ __('messages.tarjeta') }}</span>
                             @else
-                                —
+                                -
                             @endif
                         </td>
-                        <td class="px-6 py-4">{{ $detalle->cantidad }}</td>
-                        <td class="px-6 py-4">${{ number_format($detalle->precio_unit, 2) }}</td>
-                        <td class="px-6 py-4 font-medium">${{ number_format($detalle->precio_unit * $detalle->cantidad, 2) }}</td>
+                        <td class="text-right font-mono tabular-nums">{{ $detalle->cantidad }}</td>
+                        <td class="text-right"><x-price :value="$detalle->precio_unit" /></td>
+                        <td class="text-right"><x-price :value="$detalle->precio_unit * $detalle->cantidad" /></td>
                     </tr>
                 @endforeach
             </tbody>
-            <tfoot class="bg-gray-50">
-                <tr>
-                    <td colspan="4" class="px-6 py-3 text-right font-bold">{{ __('messages.total') }}</td>
-                    <td class="px-6 py-3 font-bold text-green-600">${{ number_format($pedido->total, 2) }}</td>
-                </tr>
-            </tfoot>
         </table>
-    </div>
+    </x-card>
 
-    @if($pedido->estado === 'pendiente')
-        <form action="{{ route('pedidos.cancelar', $pedido) }}" method="POST"
-              onsubmit="return confirm('{{ __('messages.confirm_cancelar_pedido') }}')">
-            @csrf @method('PATCH')
-            <button class="bg-red-100 text-red-700 px-4 py-2 rounded hover:bg-red-200">
-                {{ __('messages.cancelar_pedido') }}
-            </button>
-        </form>
-    @endif
+    <x-card class="p-6">
+        <p class="gv-label text-muted">{{ __('messages.total') }}</p>
+        <x-price :value="$pedido->total" class="mt-2 block text-3xl font-medium tracking-[-0.02em]" />
+
+        @if($pedido->estado === 'pendiente')
+            <form action="{{ route('pedidos.cancelar', $pedido) }}" method="POST" class="mt-6 border-t border-line pt-6"
+                  onsubmit="return confirm(@js(__('messages.confirm_cancelar_pedido')))">
+                @csrf @method('PATCH')
+                <x-button variant="danger" class="w-full">{{ __('messages.cancelar_pedido') }}</x-button>
+            </form>
+        @endif
+    </x-card>
 </div>
 @endsection

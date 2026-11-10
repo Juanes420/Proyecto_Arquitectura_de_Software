@@ -9,11 +9,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CategoriaController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $categorias = Categoria::withCount('videojuegos')
             ->orderBy('nombre')
@@ -22,12 +24,12 @@ class CategoriaController extends Controller
         return view('admin.categorias.index', compact('categorias'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.categorias.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'nombre' => ['required', 'string', 'max:255', 'unique:categorias,nombre'],
@@ -40,19 +42,19 @@ class CategoriaController extends Controller
             ->with('success', __('messages.categoria_created'));
     }
 
-    public function show(Categoria $categoria)
+    public function show(Categoria $categoria): View
     {
         $categoria->load('videojuegos');
 
         return view('admin.categorias.show', compact('categoria'));
     }
 
-    public function edit(Categoria $categoria)
+    public function edit(Categoria $categoria): View
     {
         return view('admin.categorias.edit', compact('categoria'));
     }
 
-    public function update(Request $request, Categoria $categoria)
+    public function update(Request $request, Categoria $categoria): RedirectResponse
     {
         $validated = $request->validate([
             'nombre' => ['required', 'string', 'max:255', 'unique:categorias,nombre,' . $categoria->id],
@@ -65,7 +67,7 @@ class CategoriaController extends Controller
             ->with('success', __('messages.categoria_updated'));
     }
 
-    public function destroy(Categoria $categoria)
+    public function destroy(Categoria $categoria): RedirectResponse
     {
         // Una categoría con videojuegos asociados no se puede borrar:
         // la FK de videojuegos.categoria_id es obligatoria.

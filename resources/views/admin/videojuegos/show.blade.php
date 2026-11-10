@@ -1,71 +1,81 @@
 @extends('layouts.admin')
 
 @section('header', $videojuego->titulo)
+@section('back', route('admin.videojuegos.index'))
+
+@section('actions')
+    <x-button :href="route('admin.videojuegos.edit', $videojuego)" icon="pencil-simple">{{ __('messages.edit') }}</x-button>
+@endsection
 
 @section('content')
-<div class="bg-white rounded-lg shadow p-6 max-w-3xl">
-    <div class="grid grid-cols-2 gap-4 mb-6">
-        <div>
-            <span class="text-gray-500 text-sm">{{ __('messages.plataforma') }}</span>
-            <p class="font-medium">{{ $videojuego->plataforma }}</p>
-        </div>
-        <div>
-            <span class="text-gray-500 text-sm">{{ __('messages.categoria') }}</span>
-            <p class="font-medium">{{ $videojuego->categoria->nombre }}</p>
-        </div>
-        <div>
-            <span class="text-gray-500 text-sm">{{ __('messages.precio') }}</span>
-            <p class="font-medium text-green-600">${{ number_format($videojuego->precio, 2) }}</p>
-        </div>
-        <div>
-            <span class="text-gray-500 text-sm">{{ __('messages.stock') }}</span>
-            <p class="font-medium">{{ $videojuego->stock }}</p>
-        </div>
+<div class="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+    <div class="self-start rounded-md border border-line bg-subtle p-1.5">
+        <x-cover :src="$videojuego->imagen ? asset('storage/' . $videojuego->imagen) : null" :alt="$videojuego->titulo" class="aspect-[4/5] rounded-[4px]" />
     </div>
 
-    @if($videojuego->descripcion)
-        <div class="mb-6">
-            <span class="text-gray-500 text-sm">{{ __('messages.descripcion') }}</span>
-            <p class="mt-1">{{ $videojuego->descripcion }}</p>
-        </div>
-    @endif
-
-    {{-- DLCs --}}
-    @if($videojuego->dlcs->count())
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-2">{{ __('messages.dlcs') }} ({{ $videojuego->dlcs->count() }})</h3>
-            <ul class="space-y-1">
-                @foreach($videojuego->dlcs as $dlc)
-                    <li class="flex justify-between bg-gray-50 px-3 py-2 rounded">
-                        <span>{{ $dlc->nombre }}</span>
-                        <span class="text-green-600">${{ number_format($dlc->precio, 2) }}</span>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    {{-- Reseñas --}}
-    @if($videojuego->resenas->count())
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-2">{{ __('messages.resenas') }} ({{ $videojuego->resenas->count() }}) — ⭐ {{ $videojuego->promedio_calificacion }}/5</h3>
-            @foreach($videojuego->resenas as $resena)
-                <div class="bg-gray-50 px-3 py-2 rounded mb-2">
-                    <div class="flex justify-between">
-                        <span class="font-medium">{{ $resena->usuario->nombre }}</span>
-                        <span>{{ str_repeat('⭐', $resena->calificacion) }}</span>
-                    </div>
-                    @if($resena->comentario)
-                        <p class="text-gray-600 text-sm mt-1">{{ $resena->comentario }}</p>
-                    @endif
+    <div class="flex flex-col gap-8">
+        <dl class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div class="border-t border-line pt-4">
+                <dt class="gv-label text-muted">{{ __('messages.plataforma') }}</dt>
+                <dd class="mt-2">{{ $videojuego->plataforma }}</dd>
+            </div>
+            <div class="border-t border-line pt-4">
+                <dt class="gv-label text-muted">{{ __('messages.categoria') }}</dt>
+                <dd class="mt-2">{{ $videojuego->categoria->nombre }}</dd>
+            </div>
+            <div class="border-t border-line pt-4">
+                <dt class="gv-label text-muted">{{ __('messages.precio') }}</dt>
+                <dd class="mt-2"><x-price :value="$videojuego->precio" /></dd>
+            </div>
+            <div class="border-t border-line pt-4">
+                <dt class="gv-label text-muted">{{ __('messages.stock') }}</dt>
+                <dd class="mt-2 font-mono tabular-nums">{{ $videojuego->stock }}</dd>
+            </div>
+            @if($videojuego->descripcion)
+                <div class="border-t border-line pt-4 sm:col-span-2">
+                    <dt class="gv-label text-muted">{{ __('messages.descripcion') }}</dt>
+                    <dd class="mt-2 max-w-[65ch] leading-relaxed">{{ $videojuego->descripcion }}</dd>
                 </div>
-            @endforeach
-        </div>
-    @endif
+            @endif
+        </dl>
 
-    <div class="flex gap-3">
-        <a href="{{ route('admin.videojuegos.edit', $videojuego) }}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">{{ __('messages.edit') }}</a>
-        <a href="{{ route('admin.videojuegos.index') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">{{ __('messages.back') }}</a>
+        @if($videojuego->dlcs->isNotEmpty())
+            <section>
+                <h2 class="text-lg font-semibold">{{ __('messages.dlcs') }} <span class="font-mono text-sm font-normal text-muted">({{ $videojuego->dlcs->count() }})</span></h2>
+                <ul class="mt-3 divide-y divide-line rounded-md border border-line bg-surface">
+                    @foreach($videojuego->dlcs as $dlc)
+                        <li class="flex justify-between gap-4 px-4 py-3 text-sm">
+                            <span>{{ $dlc->nombre }}</span>
+                            <x-price :value="$dlc->precio" />
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
+        @if($videojuego->resenas->isNotEmpty())
+            <section>
+                <h2 class="flex flex-wrap items-center gap-3 text-lg font-semibold">
+                    {{ __('messages.resenas') }}
+                    <span class="inline-flex items-center gap-1 font-mono text-sm font-normal text-muted">
+                        <x-icon name="star" class="size-4" />{{ __('messages.rating_out_of', ['value' => $videojuego->promedio_calificacion]) }}
+                    </span>
+                </h2>
+                <ul class="mt-3 divide-y divide-line rounded-md border border-line bg-surface">
+                    @foreach($videojuego->resenas as $resena)
+                        <li class="px-4 py-3 text-sm">
+                            <div class="flex justify-between gap-4">
+                                <span class="font-medium">{{ $resena->usuario->nombre }}</span>
+                                <span class="font-mono text-muted">{{ __('messages.rating_out_of', ['value' => $resena->calificacion]) }}</span>
+                            </div>
+                            @if($resena->comentario)
+                                <p class="mt-1 leading-relaxed text-muted">{{ $resena->comentario }}</p>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
     </div>
 </div>
 @endsection

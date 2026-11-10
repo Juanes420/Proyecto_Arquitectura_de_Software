@@ -3,45 +3,26 @@
 @section('title', __('auth.login') . ' - GameVault')
 
 @section('content')
-<div class="max-w-md mx-auto mt-10">
-    <div class="bg-white rounded-lg shadow-md p-8">
-        <h2 class="text-2xl font-bold text-center mb-6">{{ __('auth.login') }}</h2>
+<div class="mx-auto w-full max-w-sm py-8 sm:py-12">
+    <h1 class="text-3xl font-semibold tracking-[-0.025em]">{{ __('auth.login') }}</h1>
+    <p class="mt-2 text-[15px] leading-relaxed text-muted">{{ __('messages.login_subtitle') }}</p>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+    <form method="POST" action="{{ route('login') }}" class="mt-8 flex flex-col gap-5">
+        @csrf
+        <x-input :label="__('auth.email')" name="email" type="email" required autofocus autocomplete="email" />
+        <x-input :label="__('auth.password_label')" name="password" type="password" required autocomplete="current-password" />
 
-            <div class="mb-4">
-                <label for="email" class="block text-gray-700 font-medium mb-2">{{ __('auth.email') }}</label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                       class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('email') border-red-500 @enderror">
-                @error('email')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        <label for="remember" class="flex cursor-pointer items-center gap-2.5 text-sm text-muted">
+            <input type="checkbox" name="remember" id="remember" @checked(old('remember')) class="size-4 rounded-sm accent-[var(--gv-ink)]">
+            {{ __('auth.remember_me') }}
+        </label>
 
-            <div class="mb-4">
-                <label for="password" class="block text-gray-700 font-medium mb-2">{{ __('auth.password_label') }}</label>
-                <input type="password" name="password" id="password" required
-                       class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                @error('password')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        <x-button size="lg" class="w-full">{{ __('auth.login') }}</x-button>
+    </form>
 
-            <div class="mb-4 flex items-center">
-                <input type="checkbox" name="remember" id="remember" class="mr-2">
-                <label for="remember" class="text-gray-600">{{ __('auth.remember_me') }}</label>
-            </div>
-
-            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition">
-                {{ __('auth.login') }}
-            </button>
-        </form>
-
-        <p class="text-center mt-4 text-gray-600">
-            {{ __('auth.no_account') }}
-            <a href="{{ route('register') }}" class="text-indigo-600 hover:underline">{{ __('auth.register') }}</a>
-        </p>
-    </div>
+    <p class="mt-8 border-t border-line pt-6 text-sm text-muted">
+        {{ __('auth.no_account') }}
+        <a href="{{ route('register') }}" class="font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">{{ __('auth.register') }}</a>
+    </p>
 </div>
 @endsection

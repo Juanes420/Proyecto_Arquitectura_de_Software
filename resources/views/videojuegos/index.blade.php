@@ -3,68 +3,64 @@
 @section('title', __('messages.catalog') . ' - GameVault')
 
 @section('content')
-<h2 class="text-2xl font-bold mb-6">{{ __('messages.catalog') }}</h2>
+<x-page-header :title="__('messages.catalog')" :description="__('messages.catalog_description')" class="mb-6" />
 
-{{-- Filtros --}}
-<div class="bg-white rounded-lg shadow p-4 mb-6">
-    <form action="{{ route('videojuegos.index') }}" method="GET" class="flex flex-wrap gap-4 items-end">
-        <div>
-            <label class="block text-sm text-gray-600 mb-1">{{ __('messages.search') }}</label>
-            <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="{{ __('messages.titulo') }}..."
-                   class="border rounded px-3 py-2">
-        </div>
-        <div>
-            <label class="block text-sm text-gray-600 mb-1">{{ __('messages.categoria') }}</label>
-            <select name="categoria" class="border rounded px-3 py-2">
-                <option value="">{{ __('messages.all') }}</option>
-                @foreach($categorias as $cat)
-                    <option value="{{ $cat->id }}" {{ request('categoria') == $cat->id ? 'selected' : '' }}>{{ $cat->nombre }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label class="block text-sm text-gray-600 mb-1">{{ __('messages.plataforma') }}</label>
-            <select name="plataforma" class="border rounded px-3 py-2">
-                <option value="">{{ __('messages.all') }}</option>
-                @foreach($plataformas as $plat)
-                    <option value="{{ $plat }}" {{ request('plataforma') === $plat ? 'selected' : '' }}>{{ $plat }}</option>
-                @endforeach
-            </select>
-        </div>
-        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">{{ __('messages.filter') }}</button>
-    </form>
-</div>
+{{-- Pestañas de categoria: conservan la busqueda y la plataforma activas. --}}
+<nav aria-label="{{ __('messages.categoria') }}" class="-mx-4 mb-6 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+    <ul class="flex min-w-max gap-6 border-b border-line">
+        <li>
+            <x-nav-link :href="route('videojuegos.index', request()->only('buscar', 'plataforma'))" :active="! request()->filled('categoria')">
+                {{ __('messages.all') }}
+            </x-nav-link>
+        </li>
+        @foreach($categorias as $cat)
+            <li>
+                <x-nav-link :href="route('videojuegos.index', array_merge(request()->only('buscar', 'plataforma'), ['categoria' => $cat->id]))"
+                            :active="request('categoria') == $cat->id">
+                    {{ $cat->nombre }}
+                </x-nav-link>
+            </li>
+        @endforeach
+    </ul>
+</nav>
 
-{{-- Grid de juegos --}}
-<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    @forelse($videojuegos as $vj)
-        <a href="{{ route('videojuegos.show', $vj) }}" class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden">
-            @if($vj->imagen)
-                <img src="{{ asset('storage/' . $vj->imagen) }}" alt="{{ $vj->titulo }}" class="h-48 w-full object-cover">
-            @else
-                <div class="h-48 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-4xl">
-                    🎮
-                </div>
-            @endif
-            <div class="p-4">
-                <h3 class="font-bold text-lg">{{ $vj->titulo }}</h3>
-                <p class="text-gray-500 text-sm">{{ $vj->plataforma }} · {{ $vj->categoria->nombre }}</p>
-                <div class="flex justify-between items-center mt-2">
-                    <span class="text-xl font-bold text-green-600">${{ number_format($vj->precio, 2) }}</span>
-                    @if($vj->stock > 0)
-                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">{{ __('messages.disponible') }}</span>
-                    @else
-                        <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">{{ __('messages.agotado') }}</span>
-                    @endif
-                </div>
-            </div>
-        </a>
-    @empty
-        <p class="col-span-4 text-center text-gray-500 py-8">{{ __('messages.no_results') }}</p>
-    @endforelse
-</div>
+<form action="{{ route('videojuegos.index') }}" method="GET" role="search" class="mb-10 grid gap-3 sm:grid-cols-[1fr_220px_auto_auto] sm:items-end">
+    @if(request()->filled('categoria'))
+        <input type="hidden" name="categoria" value="{{ request('categoria') }}">
+    @endif
+    <div class="relative">
+        <label for="buscar" class="sr-only">{{ __('messages.search') }}</label>
+        <x-icon name="magnifying-glass" class="pointer-events-none absolute left-3.5 top-1/2 size-[18px] -translate-y-1/2 text-muted" />
+        <input type="search" id="buscar" name="buscar" value="{{ request('buscar') }}" placeholder="{{ __('messages.search_placeholder') }}" class="gv-input pl-10">
+    </div>
+    <div>
+        <label for="plataforma" class="sr-only">{{ __('messages.plataforma') }}</label>
+        <select id="plataforma" name="plataforma" class="gv-input">
+            <option value="">{{ __('messages.plataforma') }}: {{ __('messages.all') }}</option>
+            @foreach($plataformas as $plat)
+                <option value="{{ $plat }}" @selected(request('plataforma') === $plat)>{{ $plat }}</option>
+            @endforeach
+        </select>
+    </div>
+    <x-button size="lg" class="h-11">{{ __('messages.filter') }}</x-button>
+    @if(request()->anyFilled(['buscar', 'plataforma', 'categoria']))
+        <x-button :href="route('videojuegos.index')" variant="ghost" size="lg" class="h-11">{{ __('messages.clear_filters') }}</x-button>
+    @endif
+</form>
 
-<div class="mt-6">
-    {{ $videojuegos->withQueryString()->links() }}
-</div>
+@if($videojuegos->isEmpty())
+    <x-empty-state icon="magnifying-glass" :title="__('messages.no_games_title')" :text="__('messages.no_games_text')">
+        <x-button :href="route('videojuegos.index')" variant="secondary">{{ __('messages.clear_filters') }}</x-button>
+    </x-empty-state>
+@else
+    <div class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        @foreach($videojuegos as $videojuego)
+            <x-game-tile :videojuego="$videojuego" />
+        @endforeach
+    </div>
+
+    <div class="mt-12 border-t border-line pt-6">
+        {{ $videojuegos->withQueryString()->links() }}
+    </div>
+@endif
 @endsection

@@ -2,55 +2,39 @@
 @extends('layouts.admin')
 
 @section('header', $tarjeta->nombre)
+@section('back', route('admin.tarjetas.index'))
+
+@section('actions')
+    <x-button :href="route('admin.tarjetas.edit', $tarjeta)" icon="pencil-simple">{{ __('messages.edit') }}</x-button>
+@endsection
 
 @section('content')
-<div class="max-w-2xl bg-white rounded-lg shadow p-6">
-
-    <div class="space-y-4">
-
-        <div>
-            <p class="text-sm text-gray-500">{{ __('messages.nombre') }}</p>
-            <p class="text-lg font-medium">{{ $tarjeta->nombre }}</p>
-        </div>
-
-        <div>
-            <p class="text-sm text-gray-500">{{ __('messages.plataforma') }}</p>
-            <p class="text-lg">{{ $tarjeta->plataforma }}</p>
-        </div>
-
-        <div>
-            <p class="text-sm text-gray-500">{{ __('messages.precio') }}</p>
-            <p class="text-lg">${{ number_format($tarjeta->precio, 2) }}</p>
-        </div>
-
-        <div>
-            <p class="text-sm text-gray-500">{{ __('messages.stock') }}</p>
-            <p class="text-lg">{{ $tarjeta->stock }}</p>
-        </div>
-
-        <div>
-            <p class="text-sm text-gray-500">{{ __('messages.descripcion') }}</p>
-            <p class="text-gray-700">{{ $tarjeta->descripcion ?: '-' }}</p>
-        </div>
-
-        <div>
-            <p class="text-sm text-gray-500">{{ __('messages.imagen') }}</p>
-            <p class="text-gray-700">{{ $tarjeta->imagen ?: '-' }}</p>
-        </div>
-
+<div class="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+    <div class="self-start rounded-md border border-line bg-subtle p-1.5">
+        <x-cover :src="$tarjeta->imagen" :alt="$tarjeta->nombre" icon="credit-card" class="aspect-[4/3] rounded-[4px]" />
     </div>
 
-    <div class="flex gap-3 mt-6">
-        <a href="{{ route('admin.tarjetas.edit', $tarjeta) }}"
-           class="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600">
-            {{ __('messages.edit') }}
-        </a>
-
-        <a href="{{ route('admin.tarjetas.index') }}"
-           class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400">
-            {{ __('messages.cancel') }}
-        </a>
-    </div>
-
+    <dl class="grid content-start gap-x-8 gap-y-6 sm:grid-cols-2">
+        <div class="border-t border-line pt-4">
+            <dt class="gv-label text-muted">{{ __('messages.plataforma') }}</dt>
+            <dd class="mt-2">{{ $tarjeta->plataforma }}</dd>
+        </div>
+        <div class="border-t border-line pt-4">
+            <dt class="gv-label text-muted">{{ __('messages.precio') }}</dt>
+            <dd class="mt-2"><x-price :value="$tarjeta->precio" /></dd>
+        </div>
+        <div class="border-t border-line pt-4">
+            <dt class="gv-label text-muted">{{ __('messages.stock') }}</dt>
+            <dd class="mt-2 font-mono tabular-nums">{{ $tarjeta->stock }}</dd>
+        </div>
+        <div class="border-t border-line pt-4">
+            <dt class="gv-label text-muted">{{ __('messages.imagen') }}</dt>
+            <dd class="mt-2 break-all text-sm text-muted">{{ $tarjeta->imagen ?: '-' }}</dd>
+        </div>
+        <div class="border-t border-line pt-4 sm:col-span-2">
+            <dt class="gv-label text-muted">{{ __('messages.descripcion') }}</dt>
+            <dd class="mt-2 max-w-[65ch] leading-relaxed">{{ $tarjeta->descripcion ?: '-' }}</dd>
+        </div>
+    </dl>
 </div>
 @endsection

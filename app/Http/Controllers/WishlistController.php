@@ -9,11 +9,13 @@ namespace App\Http\Controllers;
 
 use App\Models\VideoJuego;
 use App\Models\Wishlist;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class WishlistController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $wishlists = Wishlist::with('videojuego.categoria')
             ->where('usuario_id', Auth::id())
@@ -23,7 +25,7 @@ class WishlistController extends Controller
         return view('wishlist.index', compact('wishlists'));
     }
 
-    public function store(VideoJuego $videojuego)
+    public function store(VideoJuego $videojuego): RedirectResponse
     {
         // La tabla tiene un índice único (usuario_id, videojuego_id):
         // firstOrCreate evita el error de duplicado si hacen doble clic.
@@ -44,7 +46,7 @@ class WishlistController extends Controller
         return back()->with('success', __('messages.wishlist_added'));
     }
 
-    public function destroy(VideoJuego $videojuego)
+    public function destroy(VideoJuego $videojuego): RedirectResponse
     {
         $wishlist = Wishlist::where('usuario_id', Auth::id())
             ->where('videojuego_id', $videojuego->id)

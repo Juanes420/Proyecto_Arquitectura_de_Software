@@ -1,23 +1,15 @@
 {{-- Autor: Juanes Peña --}}
 {{-- Botón agregar/quitar de la lista de deseos. Espera la variable $videojuego. --}}
 @auth
-    @php
-        $enWishlist = auth()->user()->wishlists->contains('videojuego_id', $videojuego->id);
-    @endphp
-
-    @if($enWishlist)
-        <form action="{{ route('wishlist.destroy', $videojuego) }}" method="POST" class="inline">
+    @if(auth()->user()->wishlists->contains('videojuego_id', $videojuego->id))
+        <form action="{{ route('wishlist.destroy', $videojuego) }}" method="POST">
             @csrf @method('DELETE')
-            <button class="bg-red-100 text-red-700 px-4 py-2 rounded hover:bg-red-200">
-                💔 {{ __('messages.wishlist_remove') }}
-            </button>
+            <x-button variant="secondary" size="lg" icon="heart" aria-pressed="true">{{ __('messages.wishlist_remove') }}</x-button>
         </form>
     @else
-        <form action="{{ route('wishlist.store', $videojuego) }}" method="POST" class="inline">
+        <form action="{{ route('wishlist.store', $videojuego) }}" method="POST">
             @csrf
-            <button class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">
-                ❤️ {{ __('messages.wishlist_add') }}
-            </button>
+            <x-button variant="secondary" size="lg" icon="heart">{{ __('messages.wishlist_add') }}</x-button>
         </form>
     @endif
 @endauth

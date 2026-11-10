@@ -1,40 +1,217 @@
 @import "tailwindcss";
 
-nav[role="navigation"] svg {
-    width: 1.25rem;
-    height: 1.25rem;
+/*
+ * Sistema visual de GameVault.
+ * Base editorial clara (hueso y tinta) con un unico acento verde consola.
+ * Los colores son variables: el modo oscuro solo cambia sus valores.
+ * Radios: 6px para controles, tarjetas e imagenes; 4px para insignias.
+ */
+@theme inline {
+    --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
+
+    --color-canvas: var(--gv-canvas);
+    --color-surface: var(--gv-surface);
+    --color-subtle: var(--gv-subtle);
+    --color-ink: var(--gv-ink);
+    --color-muted: var(--gv-muted);
+    --color-line: var(--gv-line);
+    --color-line-strong: var(--gv-line-strong);
+    --color-accent: var(--gv-accent);
+    --color-on-accent: var(--gv-on-accent);
+    --color-on-ink: var(--gv-on-ink);
+    --color-danger: var(--gv-danger);
+    --color-warning: var(--gv-warning);
+
+    --ease-console: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-nav[role="navigation"] span, nav[role="navigation"] a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    border: 1px solid #d1d5db;
-    margin: 0 0.125rem;
+:root {
+    color-scheme: light;
+    --gv-canvas: #eeede8;
+    --gv-surface: #f8f7f4;
+    --gv-subtle: #e4e2db;
+    --gv-ink: #161615;
+    --gv-muted: #5c5b56;
+    --gv-line: #d9d7cf;
+    --gv-line-strong: #b9b6ac;
+    --gv-accent: #1e6b3f;
+    --gv-on-accent: #f8f7f4;
+    --gv-on-ink: #f8f7f4;
+    --gv-danger: #a3302b;
+    --gv-warning: #855700;
 }
 
-nav[role="navigation"] span[aria-current="page"] {
-    background-color: #4f46e5;
-    color: white;
-    border-color: #4f46e5;
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+        --gv-canvas: #0f0f0e;
+        --gv-surface: #181817;
+        --gv-subtle: #242422;
+        --gv-ink: #edece8;
+        --gv-muted: #a09f99;
+        --gv-line: #2e2e2b;
+        --gv-line-strong: #4a4945;
+        --gv-accent: #6cc18c;
+        --gv-on-accent: #0f0f0e;
+        --gv-on-ink: #0f0f0e;
+        --gv-danger: #ec8a82;
+        --gv-warning: #e6b95c;
+    }
 }
 
-nav[role="navigation"] a:hover {
-    background-color: #f3f4f6;
+@layer base {
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        font-feature-settings: "ss01", "cv11";
+    }
+
+    /* Foco tipo consola: contorno grueso y separado del elemento. */
+    :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+        outline: 2px solid var(--gv-ink);
+        outline-offset: 2px;
+    }
+
+    ::selection {
+        background: var(--gv-accent);
+        color: var(--gv-on-accent);
+    }
 }
 
-nav[role="navigation"] .flex.justify-between {
-    display: flex;
-    justify-content: center;
-    gap: 0.25rem;
+@layer components {
+    .gv-label {
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .gv-input {
+        display: block;
+        width: 100%;
+        height: 2.75rem;
+        padding: 0 0.875rem;
+        border-radius: 6px;
+        border: 1px solid var(--gv-line-strong);
+        background: var(--gv-surface);
+        color: var(--gv-ink);
+        font-size: 0.9375rem;
+        transition: border-color 200ms var(--ease-console), box-shadow 200ms var(--ease-console);
+    }
+
+    textarea.gv-input {
+        height: auto;
+        min-height: 7rem;
+        padding: 0.75rem 0.875rem;
+        line-height: 1.6;
+    }
+
+    select.gv-input {
+        appearance: none;
+        padding-right: 2.5rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%237a7974'%3E%3Cpath d='M212.24,100.24l-80,80a6,6,0,0,1-8.48,0l-80-80a6,6,0,0,1,8.48-8.48L128,167.51l75.76-75.75a6,6,0,0,1,8.48,8.48Z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.875rem center;
+        background-size: 1rem;
+    }
+
+    input[type="file"].gv-input {
+        height: auto;
+        padding: 0.625rem 0.875rem;
+    }
+
+    .gv-input::placeholder {
+        color: var(--gv-muted);
+        opacity: 0.8;
+    }
+
+    .gv-input:hover {
+        border-color: var(--gv-muted);
+    }
+
+    .gv-input:focus-visible {
+        outline: none;
+        border-color: var(--gv-ink);
+        box-shadow: 0 0 0 1px var(--gv-ink);
+    }
+
+    .gv-input[aria-invalid="true"] {
+        border-color: var(--gv-danger);
+    }
+
+    .gv-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+    }
+
+    .gv-table th {
+        position: relative;
+        padding: 0.75rem 1.25rem;
+        text-align: left;
+        white-space: nowrap;
+        color: var(--gv-muted);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--gv-line);
+    }
+
+    .gv-table td {
+        padding: 0.875rem 1.25rem;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--gv-line);
+    }
+
+    .gv-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .gv-table tbody tr {
+        transition: background-color 200ms var(--ease-console);
+    }
+
+    .gv-table tbody tr:hover {
+        background: var(--gv-subtle);
+    }
+
+    /* Mosaico de catalogo: al recibir foco o hover se levanta y se enmarca, como en un menu de consola. */
+    .gv-tile {
+        border-radius: 6px;
+        transition: transform 250ms var(--ease-console), box-shadow 250ms var(--ease-console);
+    }
+
+    .gv-tile:hover,
+    .gv-tile:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 0 0 2px var(--gv-ink);
+        outline: none;
+    }
 }
 
-nav[role="navigation"] > div:first-child {
-    display: none;
+@media (prefers-reduced-motion: no-preference) {
+    .gv-enter {
+        animation: gv-enter 450ms var(--ease-console) both;
+    }
 }
 
-nav[role="navigation"] > div:last-child span, nav[role="navigation"] > div:last-child a {
-    border-radius: 0.375rem;
+@keyframes gv-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gv-tile,
+    .gv-tile:hover,
+    .gv-tile:focus-visible {
+        transform: none;
+    }
 }
