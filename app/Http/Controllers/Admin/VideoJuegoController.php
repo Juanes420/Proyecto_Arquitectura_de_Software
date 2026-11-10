@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\VideoJuegoRequest;
 use App\Models\Categoria;
 use App\Models\VideoJuego;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class VideoJuegoController extends Controller
@@ -27,17 +27,9 @@ class VideoJuegoController extends Controller
         return view('admin.videojuegos.create', compact('categorias'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(VideoJuegoRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'titulo' => ['required', 'string', 'max:255'],
-            'plataforma' => ['required', 'string', 'max:100'],
-            'precio' => ['required', 'numeric', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
-            'categoria_id' => ['required', 'exists:categorias,id'],
-            'descripcion' => ['nullable', 'string'],
-            'imagen' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('imagen')) {
             $validated['imagen'] = $request->file('imagen')->store('videojuegos', 'public');
@@ -63,17 +55,9 @@ class VideoJuegoController extends Controller
         return view('admin.videojuegos.edit', compact('videojuego', 'categorias'));
     }
 
-    public function update(Request $request, VideoJuego $videojuego): RedirectResponse
+    public function update(VideoJuegoRequest $request, VideoJuego $videojuego): RedirectResponse
     {
-        $validated = $request->validate([
-            'titulo' => ['required', 'string', 'max:255'],
-            'plataforma' => ['required', 'string', 'max:100'],
-            'precio' => ['required', 'numeric', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
-            'categoria_id' => ['required', 'exists:categorias,id'],
-            'descripcion' => ['nullable', 'string'],
-            'imagen' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('imagen')) {
             $validated['imagen'] = $request->file('imagen')->store('videojuegos', 'public');
