@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Dlc;
 use App\Models\Pedido;
 use App\Models\User;
 use App\Models\VideoJuego;
@@ -41,5 +42,23 @@ class PedidoServiceTest extends TestCase
 
         $this->assertSame(0, Pedido::count());
         $this->assertSame(2, $juego->fresh()->stock);
+    }
+
+    public function test_pedido_con_dlc_no_controla_stock_y_cancelar_solo_devuelve_stock_fisico(): void
+    {
+        $usuario = User::factory()->create();
+        $juego = VideoJuego::factory()->create(['precio' => 40, 'stock' => 5]);
+        $dlc = Dlc::factory()->create(['videojuego_id' => $juego->id, 'precio' => 10]);
+        $servicio = app(PedidoService::class);
+
+        $pedido = $servicio->crear($usuario->id, [$juego->id => 2], [], [$dlc->id => 3]);
+
+        $this->assertEquals(110, $pedido->total);
+        $this->assertSame(1, $pedido->detalles()->whereNotNull('dlc_id')->count());
+        $this->assertSame(3, $juego->fresh()->stock);
+
+        $this->assertTrue($servicio->cancelar($pedido->fresh()));
+        $this->assertSame(5, $juego->fresh()->stock);
+        $this->assertSame('cancelado', $pedido->fresh()->estado);
     }
 }
