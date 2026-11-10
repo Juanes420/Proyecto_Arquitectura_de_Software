@@ -22,9 +22,9 @@
                 <div class="mt-4 flex items-center gap-4">
                     <span class="text-3xl font-bold text-green-600">${{ number_format($videojuego->precio, 2) }}</span>
                     @if($videojuego->stock > 0)
-                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded">{{ $videojuego->stock }} en stock</span>
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded">{{ $videojuego->stock }} {{ __('messages.en_stock') }}</span>
                     @else
-                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded">Agotado</span>
+                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded">{{ __('messages.agotado') }}</span>
                     @endif
                 </div>
 

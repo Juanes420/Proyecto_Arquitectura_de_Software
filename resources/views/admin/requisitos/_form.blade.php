@@ -67,7 +67,7 @@
         <label for="directx" class="block text-gray-700 font-medium mb-1">{{ __('messages.directx') }}</label>
         <input type="text" name="directx" id="directx"
                value="{{ old('directx', $requisito->directx ?? '') }}"
-               placeholder="Versión 12"
+               placeholder="{{ __('messages.directx_placeholder') }}"
                class="w-full border rounded-lg px-3 py-2 @error('directx') border-red-500 @enderror">
         @error('directx') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
     </div>

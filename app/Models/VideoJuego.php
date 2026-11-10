@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -62,6 +63,13 @@ class VideoJuego extends Model
     public function detallePedidos(): HasMany
     {
         return $this->hasMany(DetallePedido::class, 'videojuego_id');
+    }
+
+    // ── Scopes ──────────────────────────────────────────
+
+    public function scopeEnStock(Builder $query): Builder
+    {
+        return $query->where('stock', '>', 0);
     }
 
     // ── Accessors ───────────────────────────────────────

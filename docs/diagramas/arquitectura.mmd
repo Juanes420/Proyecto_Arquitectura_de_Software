@@ -1,0 +1,53 @@
+flowchart LR
+    U["Usuario<br/>(navegador)"]
+    E2["Equipo 2<br/>Tienda de Carnicería"]
+    G9["Grupo 9<br/>Portal de software a la medida<br/>API JSON"]
+    FTG["FreeToGame.com<br/>API pública de juegos gratis"]
+    CRON["cron-job.org<br/>ping a /up cada 10 min"]
+
+    subgraph RENDER["Render · contenedor Docker (nginx + PHP-FPM)"]
+        direction TB
+        subgraph RUTAS["Rutas"]
+            WEB["routes/web.php"]
+            API["routes/api.php<br/>GET /api/videojuegos"]
+        end
+        subgraph CTRL["Controladores"]
+            C1["VideoJuegoController<br/>PedidoController<br/>WishlistController…"]
+            C2["Api · VideoJuegoApiController"]
+            C3["JuegosGratisController"]
+            C4["ProductosAliadosController"]
+        end
+        subgraph SERV["Servicios"]
+            S1["PedidoService"]
+            S2["FreeToGameService"]
+            I1[["«interface»<br/>ProductosAliadosService"]]
+            S3["ProductosAliadosApi"]
+            S4["ProductosAliadosLocal"]
+        end
+        subgraph MOD["Modelos Eloquent"]
+            M["VideoJuego · Categoria · Pedido<br/>DetallePedido · Tarjeta · Reseña…"]
+        end
+        R["VideoJuegoResource<br/>(formato JSON)"]
+        V["Vistas Blade<br/>lang/es · lang/en"]
+    end
+
+    DB[("TiDB Cloud Starter<br/>MySQL compatible · TLS")]
+
+    U -- HTTPS --> WEB
+    E2 -- "GET /api/videojuegos" --> API
+    CRON -- "GET /up" --> RENDER
+    WEB --> C1 & C3 & C4
+    API --> C2
+    C1 --> S1
+    C1 --> M
+    S1 --> M
+    C2 --> M
+    C2 --> R
+    C3 --> S2
+    C4 --> I1
+    S3 -. implementa .-> I1
+    S4 -. implementa .-> I1
+    S2 -- "HTTP GET /api/games" --> FTG
+    S3 -- "HTTP GET (ALIADOS_API_URL)" --> G9
+    M --> DB
+    C1 & C3 & C4 --> V

@@ -6,7 +6,10 @@ use App\Http\Controllers\Admin\RequisitosMinimosPcController as AdminRequisitosM
 use App\Http\Controllers\Admin\VideoJuegoController as AdminVideoJuegoController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\JuegosGratisController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\ProductosAliadosController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\VideoJuegoController;
 use App\Http\Controllers\WishlistController;
@@ -16,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// ── Idioma ──────────────────────────────────────────────
+Route::get('/idioma/{locale}', [LocaleController::class, 'update'])->name('locale.update');
 
 // ── Autenticación ───────────────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -32,6 +38,8 @@ Route::post('/logout', [LoginController::class, 'logout'])
 // ── Catálogo público ────────────────────────────────────
 Route::get('/videojuegos', [VideoJuegoController::class, 'index'])->name('videojuegos.index');
 Route::get('/videojuegos/{videojuego}', [VideoJuegoController::class, 'show'])->name('videojuegos.show');
+Route::get('/juegos-gratis', [JuegosGratisController::class, 'index'])->name('juegos-gratis.index');
+Route::get('/productos-aliados', [ProductosAliadosController::class, 'index'])->name('productos-aliados.index');
 
 // ── Rutas autenticadas (cliente) ────────────────────────
 Route::middleware('auth')->group(function () {

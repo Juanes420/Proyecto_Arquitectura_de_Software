@@ -21,6 +21,8 @@
 
             <div id="nav-menu" class="hidden md:flex md:items-center md:gap-4 absolute md:static top-full left-0 right-0 bg-indigo-700 md:bg-transparent px-4 pb-4 md:p-0 flex-col md:flex-row gap-3 z-50">
                 <a href="{{ route('videojuegos.index') }}" class="hover:text-indigo-200">{{ __('messages.catalog') }}</a>
+                <a href="{{ route('juegos-gratis.index') }}" class="hover:text-indigo-200">{{ __('messages.juegos_gratis') }}</a>
+                <a href="{{ route('productos-aliados.index') }}" class="hover:text-indigo-200">{{ __('messages.productos_aliados') }}</a>
 
                 @auth
                     @php $wishlistCount = auth()->user()->wishlists()->count(); @endphp
@@ -47,6 +49,15 @@
                     <a href="{{ route('login') }}" class="hover:text-indigo-200">{{ __('auth.login') }}</a>
                     <a href="{{ route('register') }}" class="bg-white text-indigo-700 px-3 py-1 rounded hover:bg-indigo-100">{{ __('auth.register') }}</a>
                 @endauth
+
+                <div class="flex items-center gap-1 text-sm">
+                    @foreach(config('app.available_locales') as $idioma)
+                        <a href="{{ route('locale.update', $idioma) }}"
+                           class="px-2 py-1 rounded {{ app()->getLocale() === $idioma ? 'bg-white text-indigo-700 font-semibold' : 'hover:text-indigo-200' }}">
+                            {{ strtoupper($idioma) }}
+                        </a>
+                    @endforeach
+                </div>
             </div>
         </div>
     </nav>

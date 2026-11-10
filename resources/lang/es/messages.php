@@ -134,4 +134,23 @@ return [
     'pedidos_empty' => 'Aún no has realizado ningún pedido.',
     'producto_no_existe' => 'Uno de los productos seleccionados ya no existe.',
     'stock_insuficiente' => 'No hay stock suficiente de :producto (disponible: :stock).',
+
+    // Juegos gratis (FreeToGame)
+    'juegos_gratis' => 'Juegos gratis',
+    'juegos_gratis_descripcion' => 'Los juegos free-to-play más populares del momento.',
+    'juegos_gratis_no_disponible' => 'No pudimos cargar los juegos gratis en este momento. Intenta más tarde.',
+    'jugar_gratis' => 'Jugar gratis',
+    'datos_de' => 'Datos de',
+
+    // Productos aliados (servicio del equipo anterior)
+    'productos_aliados' => 'Productos aliados',
+    'productos_aliados_descripcion' => 'Productos de nuestro aliado :aliado, consumidos desde su servicio web.',
+    'productos_aliados_local' => 'Mostrando datos de respaldo: el servicio del aliado aún no está configurado.',
+    'productos_aliados_no_disponible' => 'El servicio de nuestro aliado no responde en este momento. Intenta más tarde.',
+    'ver_producto' => 'Ver producto',
+
+    // Estado de stock
+    'disponible' => 'Disponible',
+    'agotado' => 'Agotado',
+    'directx_placeholder' => 'Versión 12',
 ];
