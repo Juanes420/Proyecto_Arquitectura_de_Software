@@ -21,6 +21,7 @@
 
             <div id="nav-menu" class="hidden md:flex md:items-center md:gap-4 absolute md:static top-full left-0 right-0 bg-indigo-700 md:bg-transparent px-4 pb-4 md:p-0 flex-col md:flex-row gap-3 z-50">
                 <a href="{{ route('videojuegos.index') }}" class="hover:text-indigo-200">{{ __('messages.catalog') }}</a>
+                <a href="{{ route('juegos-gratis.index') }}" class="hover:text-indigo-200">{{ __('messages.juegos_gratis') }}</a>
 
                 @auth
                     @php $wishlistCount = auth()->user()->wishlists()->count(); @endphp

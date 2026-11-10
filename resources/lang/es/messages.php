@@ -134,4 +134,11 @@ return [
     'pedidos_empty' => 'Aún no has realizado ningún pedido.',
     'producto_no_existe' => 'Uno de los productos seleccionados ya no existe.',
     'stock_insuficiente' => 'No hay stock suficiente de :producto (disponible: :stock).',
+
+    // Juegos gratis (FreeToGame)
+    'juegos_gratis' => 'Juegos gratis',
+    'juegos_gratis_descripcion' => 'Los juegos free-to-play más populares del momento.',
+    'juegos_gratis_no_disponible' => 'No pudimos cargar los juegos gratis en este momento. Intenta más tarde.',
+    'jugar_gratis' => 'Jugar gratis',
+    'datos_de' => 'Datos de',
 ];

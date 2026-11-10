@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\RequisitosMinimosPcController as AdminRequisitosM
 use App\Http\Controllers\Admin\VideoJuegoController as AdminVideoJuegoController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\JuegosGratisController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\VideoJuegoController;
@@ -32,6 +33,7 @@ Route::post('/logout', [LoginController::class, 'logout'])
 // ── Catálogo público ────────────────────────────────────
 Route::get('/videojuegos', [VideoJuegoController::class, 'index'])->name('videojuegos.index');
 Route::get('/videojuegos/{videojuego}', [VideoJuegoController::class, 'show'])->name('videojuegos.show');
+Route::get('/juegos-gratis', [JuegosGratisController::class, 'index'])->name('juegos-gratis.index');
 
 // ── Rutas autenticadas (cliente) ────────────────────────
 Route::middleware('auth')->group(function () {
