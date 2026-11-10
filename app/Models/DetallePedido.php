@@ -16,6 +16,7 @@ class DetallePedido extends Model
         'pedido_id',
         'videojuego_id',
         'tarjeta_id',
+        'dlc_id',
         'cantidad',
         'precio_unit',
     ];
@@ -43,5 +44,10 @@ class DetallePedido extends Model
     public function tarjeta(): BelongsTo
     {
         return $this->belongsTo(Tarjeta::class, 'tarjeta_id');
+    }
+
+    public function dlc(): BelongsTo
+    {
+        return $this->belongsTo(Dlc::class, 'dlc_id');
     }
 }

@@ -27,7 +27,7 @@
                 <div class="flex items-center gap-4">
                     <x-price :value="$videojuego->precio" class="text-[15px]" />
                     @if($videojuego->stock > 0)
-                        <x-button :href="route('pedidos.create', ['videojuego' => $videojuego->id])" size="sm" icon="shopping-bag">{{ __('messages.comprar') }}</x-button>
+                        <x-add-to-cart tipo="videojuego" :id="$videojuego->id" size="sm" variant="primary" icon="shopping-bag" />
                     @else
                         <x-badge color="danger">{{ __('messages.agotado') }}</x-badge>
                     @endif

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Dlc;
 use App\Models\Pedido;
 use App\Models\Tarjeta;
 use App\Models\VideoJuego;
@@ -11,31 +12,37 @@ use Illuminate\Validation\ValidationException;
 
 class PedidoService
 {
-    public function crear(int $usuarioId, array $cantVideojuegos, array $cantTarjetas): Pedido
-    {
-        $cantVideojuegos = $this->soloConCantidad($cantVideojuegos);
-        $cantTarjetas = $this->soloConCantidad($cantTarjetas);
+    // Tipos de producto que puede llevar un pedido: modelo, columna en detalle_pedidos y si controla stock.
+    private const PRODUCTOS = [
+        'videojuego' => [VideoJuego::class, 'videojuego_id', 'titulo', true],
+        'tarjeta' => [Tarjeta::class, 'tarjeta_id', 'nombre', true],
+        'dlc' => [Dlc::class, 'dlc_id', 'nombre', false],
+    ];
 
-        if ($cantVideojuegos === [] && $cantTarjetas === []) {
+    public function crear(int $usuarioId, array $cantVideojuegos, array $cantTarjetas, array $cantDlcs = []): Pedido
+    {
+        $cantidades = array_filter([
+            'videojuego' => $this->soloConCantidad($cantVideojuegos),
+            'tarjeta' => $this->soloConCantidad($cantTarjetas),
+            'dlc' => $this->soloConCantidad($cantDlcs),
+        ]);
+
+        if ($cantidades === []) {
             throw ValidationException::withMessages(['productos' => __('messages.pedido_vacio')]);
         }
 
-        return DB::transaction(function () use ($usuarioId, $cantVideojuegos, $cantTarjetas) {
-            $videojuegos = VideoJuego::whereIn('id', array_keys($cantVideojuegos))->lockForUpdate()->get()->keyBy('id');
-            $tarjetas = Tarjeta::whereIn('id', array_keys($cantTarjetas))->lockForUpdate()->get()->keyBy('id');
-
+        return DB::transaction(function () use ($usuarioId, $cantidades) {
             $lineas = [];
 
-            foreach ($cantVideojuegos as $id => $cantidad) {
-                $videojuego = $videojuegos->get($id);
-                $this->verificarStock($videojuego, $cantidad, $videojuego?->titulo);
-                $lineas[] = ['producto' => $videojuego, 'campo' => 'videojuego_id', 'cantidad' => $cantidad];
-            }
+            foreach ($cantidades as $tipo => $porId) {
+                [$clase, $campo, $atributoNombre, $conStock] = self::PRODUCTOS[$tipo];
+                $productos = $clase::whereIn('id', array_keys($porId))->lockForUpdate()->get()->keyBy('id');
 
-            foreach ($cantTarjetas as $id => $cantidad) {
-                $tarjeta = $tarjetas->get($id);
-                $this->verificarStock($tarjeta, $cantidad, $tarjeta?->nombre);
-                $lineas[] = ['producto' => $tarjeta, 'campo' => 'tarjeta_id', 'cantidad' => $cantidad];
+                foreach ($porId as $id => $cantidad) {
+                    $producto = $productos->get($id);
+                    $this->verificar($producto, $cantidad, $producto?->{$atributoNombre}, $conStock);
+                    $lineas[] = ['producto' => $producto, 'campo' => $campo, 'cantidad' => $cantidad, 'conStock' => $conStock];
+                }
             }
 
             $pedido = Pedido::create([
@@ -56,7 +63,10 @@ class PedidoService
                     'precio_unit' => $producto->precio,
                 ]);
 
-                $producto->decrement('stock', $linea['cantidad']);
+                if ($linea['conStock']) {
+                    $producto->decrement('stock', $linea['cantidad']);
+                }
+
                 $total += $producto->precio * $linea['cantidad'];
             }
 
@@ -89,13 +99,13 @@ class PedidoService
         return array_map('intval', array_filter($cantidades, fn ($cantidad) => (int) $cantidad > 0));
     }
 
-    private function verificarStock(?Model $producto, int $cantidad, ?string $nombre): void
+    private function verificar(?Model $producto, int $cantidad, ?string $nombre, bool $conStock): void
     {
         if (! $producto) {
             throw ValidationException::withMessages(['productos' => __('messages.producto_no_existe')]);
         }
 
-        if ($producto->stock < $cantidad) {
+        if ($conStock && $producto->stock < $cantidad) {
             throw ValidationException::withMessages([
                 'productos' => __('messages.stock_insuficiente', ['producto' => $nombre, 'stock' => $producto->stock]),
             ]);
