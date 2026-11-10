@@ -28,17 +28,43 @@ classDiagram
         +index(FreeToGameService freeToGame) View
     }
     class PedidoService {
-        +crear(int usuarioId, array videojuegos, array tarjetas) Pedido
+        +crear(int usuarioId, array videojuegos, array tarjetas, array dlcs) Pedido
         +cancelar(Pedido pedido) bool
-        -verificarStock(Model producto, int cantidad, string nombre) void
+        -verificar(Model producto, int cantidad, string nombre, bool conStock) void
+    }
+    class CarritoService {
+        +agregar(string tipo, int id, int cantidad) void
+        +actualizar(string tipo, int id, int cantidad) void
+        +quitar(string tipo, int id) void
+        +vaciar() void
+        +items() Collection
+        +total() float
+        +porTipo() array
+        +tieneAgotados() bool
+    }
+    class CarritoController {
+        -CarritoService carrito
+        +index() View
+        +agregar(CarritoRequest request) RedirectResponse
+        +comprar(CarritoRequest request) RedirectResponse
+        +actualizar(CarritoRequest request) RedirectResponse
+        +quitar(CarritoRequest request) RedirectResponse
     }
     class PedidoController {
         -PedidoService pedidos
+        -CarritoService carrito
         +index() View
-        +create(Request request) View
-        +store(Request request) RedirectResponse
+        +create() View
+        +store() RedirectResponse
         +show(Pedido pedido) View
         +cancelar(Pedido pedido) RedirectResponse
+    }
+    class SteamService {
+        +detalles(int appId) array
+        +appIdDesdeImagen(string imagen) int
+    }
+    class PortadaService {
+        +diapositivas() array
     }
     class VideoJuegoApiController {
         +index() AnonymousResourceCollection
@@ -67,8 +93,14 @@ classDiagram
         +int cantidad
         +decimal precio_unit
     }
+    class Dlc {
+        +string nombre
+        +decimal precio
+        +string imagen
+    }
     class Tarjeta {
         +string nombre
+        +string plataforma
         +decimal precio
         +int stock
         +scopeEnStock(Builder query) Builder
@@ -88,9 +120,18 @@ classDiagram
     ProductosAliadosController --> ProductosAliadosService
     JuegosGratisController --> FreeToGameService
     PedidoController --> PedidoService
+    PedidoController --> CarritoService
+    CarritoController --> CarritoService
+    CarritoService --> VideoJuego
+    CarritoService --> Tarjeta
+    CarritoService --> Dlc
     PedidoService --> Pedido
     PedidoService --> VideoJuego
     PedidoService --> Tarjeta
+    PedidoService --> Dlc
+    PortadaService --> VideoJuego
+    SteamService ..> VideoJuego : importa
+    SteamService ..> Dlc : importa
     VideoJuegoApiController --> VideoJuego
     VideoJuegoApiController --> VideoJuegoResource
     Categoria "1" --> "*" VideoJuego
@@ -98,5 +139,7 @@ classDiagram
     Pedido "1" --> "*" DetallePedido
     DetallePedido "*" --> "0..1" VideoJuego
     DetallePedido "*" --> "0..1" Tarjeta
+    DetallePedido "*" --> "0..1" Dlc
+    VideoJuego "1" --> "*" Dlc
     VideoJuego "1" --> "*" Resena
     User "1" --> "*" Resena
