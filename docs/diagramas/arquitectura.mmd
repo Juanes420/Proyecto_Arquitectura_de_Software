@@ -1,8 +1,10 @@
 flowchart LR
     U["Usuario<br/>(navegador)"]
-    E2["Equipo 2<br/>Tienda de Carnicería"]
-    G9["Grupo 9<br/>Portal de software a la medida<br/>API JSON"]
-    FTG["FreeToGame.com<br/>API pública de juegos gratis"]
+    ADM["Administrador<br/>(CLI / servidor)"]
+    E2["Equipo 2<br/>Tienda de Carnicería<br/>(consume nuestra API)"]
+    ALI["Tienda de muebles y decoración<br/>API JSON del equipo aliado"]
+    FTG["FreeToGame.com<br/>API de terceros<br/>juegos gratis"]
+    STEAM["Steam Store<br/>API de terceros<br/>appdetails + portadas"]
     CRON["cron-job.org<br/>ping a /up cada 10 min"]
 
     subgraph RENDER["Render · contenedor Docker (nginx + PHP-FPM)"]
@@ -12,14 +14,18 @@ flowchart LR
             API["routes/api.php<br/>GET /api/videojuegos"]
         end
         subgraph CTRL["Controladores"]
+            C0["HomeController"]
             C1["VideoJuegoController<br/>PedidoController<br/>WishlistController…"]
             C2["Api · VideoJuegoApiController"]
             C3["JuegosGratisController"]
             C4["ProductosAliadosController"]
         end
+        CMD["Comando Artisan<br/>juegos:importar-steam"]
         subgraph SERV["Servicios"]
             S1["PedidoService"]
             S2["FreeToGameService"]
+            S5["SteamService"]
+            S6["PortadaService"]
             I1[["«interface»<br/>ProductosAliadosService"]]
             S3["ProductosAliadosApi"]
             S4["ProductosAliadosLocal"]
@@ -36,18 +42,24 @@ flowchart LR
     U -- HTTPS --> WEB
     E2 -- "GET /api/videojuegos" --> API
     CRON -- "GET /up" --> RENDER
-    WEB --> C1 & C3 & C4
+    ADM -- "php artisan" --> CMD
+    WEB --> C0 & C1 & C3 & C4
     API --> C2
+    C0 --> S6
     C1 --> S1
     C1 --> M
     S1 --> M
+    S6 --> M
     C2 --> M
     C2 --> R
     C3 --> S2
     C4 --> I1
+    CMD --> S5
+    CMD --> M
     S3 -. implementa .-> I1
     S4 -. implementa .-> I1
     S2 -- "HTTP GET /api/games" --> FTG
-    S3 -- "HTTP GET (ALIADOS_API_URL)" --> G9
+    S5 -- "HTTP GET /api/appdetails" --> STEAM
+    S3 -- "HTTP GET (ALIADOS_API_URL)" --> ALI
     M --> DB
-    C1 & C3 & C4 --> V
+    C0 & C1 & C3 & C4 --> V
