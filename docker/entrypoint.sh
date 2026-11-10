@@ -22,6 +22,8 @@ fi
 
 php artisan storage:link --force 2>/dev/null || true
 php artisan juegos:importar-steam || echo "==> No se pudieron importar los juegos de Steam"
+# En segundo plano: consulta muchas fichas de Steam y no debe retrasar el arranque del servidor.
+(php artisan dlcs:importar-steam || echo "==> No se pudieron importar los DLC de Steam") &
 
 chown -R www-data:www-data storage bootstrap/cache
 
