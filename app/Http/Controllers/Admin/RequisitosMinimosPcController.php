@@ -12,11 +12,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\RequisitosMinimosPc;
 use App\Models\VideoJuego;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class RequisitosMinimosPcController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $requisitos = RequisitosMinimosPc::with('videojuego')
             ->orderBy('videojuego_id')
@@ -25,14 +27,14 @@ class RequisitosMinimosPcController extends Controller
         return view('admin.requisitos.index', compact('requisitos'));
     }
 
-    public function create()
+    public function create(): View
     {
         $videojuegos = $this->videojuegosSinRequisitos();
 
         return view('admin.requisitos.create', compact('videojuegos'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'videojuego_id' => ['required', 'exists:videojuegos,id', 'unique:requisitos_minimos_pc,videojuego_id'],
@@ -50,7 +52,7 @@ class RequisitosMinimosPcController extends Controller
             ->with('success', __('messages.requisitos_created'));
     }
 
-    public function edit(RequisitosMinimosPc $requisito)
+    public function edit(RequisitosMinimosPc $requisito): View
     {
         $requisito->load('videojuego');
         $videojuegos = $this->videojuegosSinRequisitos($requisito->videojuego_id);
@@ -58,7 +60,7 @@ class RequisitosMinimosPcController extends Controller
         return view('admin.requisitos.edit', compact('requisito', 'videojuegos'));
     }
 
-    public function update(Request $request, RequisitosMinimosPc $requisito)
+    public function update(Request $request, RequisitosMinimosPc $requisito): RedirectResponse
     {
         $validated = $request->validate([
             'videojuego_id' => [
@@ -80,7 +82,7 @@ class RequisitosMinimosPcController extends Controller
             ->with('success', __('messages.requisitos_updated'));
     }
 
-    public function destroy(RequisitosMinimosPc $requisito)
+    public function destroy(RequisitosMinimosPc $requisito): RedirectResponse
     {
         $requisito->delete();
 

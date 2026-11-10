@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use App\Models\VideoJuego;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class VideoJuegoController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $videojuegos = VideoJuego::with('categoria')
             ->orderBy('titulo')
@@ -18,14 +20,14 @@ class VideoJuegoController extends Controller
         return view('admin.videojuegos.index', compact('videojuegos'));
     }
 
-    public function create()
+    public function create(): View
     {
         $categorias = Categoria::orderBy('nombre')->get();
 
         return view('admin.videojuegos.create', compact('categorias'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'titulo' => ['required', 'string', 'max:255'],
@@ -47,21 +49,21 @@ class VideoJuegoController extends Controller
             ->with('success', __('messages.videojuego_created'));
     }
 
-    public function show(VideoJuego $videojuego)
+    public function show(VideoJuego $videojuego): View
     {
         $videojuego->load(['categoria', 'dlcs', 'resenas.usuario', 'requisitosMinimosPC']);
 
         return view('admin.videojuegos.show', compact('videojuego'));
     }
 
-    public function edit(VideoJuego $videojuego)
+    public function edit(VideoJuego $videojuego): View
     {
         $categorias = Categoria::orderBy('nombre')->get();
 
         return view('admin.videojuegos.edit', compact('videojuego', 'categorias'));
     }
 
-    public function update(Request $request, VideoJuego $videojuego)
+    public function update(Request $request, VideoJuego $videojuego): RedirectResponse
     {
         $validated = $request->validate([
             'titulo' => ['required', 'string', 'max:255'],
@@ -83,7 +85,7 @@ class VideoJuegoController extends Controller
             ->with('success', __('messages.videojuego_updated'));
     }
 
-    public function destroy(VideoJuego $videojuego)
+    public function destroy(VideoJuego $videojuego): RedirectResponse
     {
         $videojuego->delete();
 

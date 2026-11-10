@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\TarjetaController as AdminTarjetaController;
 use App\Http\Controllers\Admin\CategoriaController as AdminCategoriaController;
 use App\Http\Controllers\Admin\RequisitosMinimosPcController as AdminRequisitosMinimosPcController;
 use App\Http\Controllers\Admin\VideoJuegoController as AdminVideoJuegoController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JuegosGratisController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PedidoController;
@@ -16,9 +18,7 @@ use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 // ── Página principal ────────────────────────────────────
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 // ── Idioma ──────────────────────────────────────────────
 Route::get('/idioma/{locale}', [LocaleController::class, 'update'])->name('locale.update');
@@ -65,9 +65,7 @@ Route::middleware('auth')->group(function () {
 // ── Panel Admin ─────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/', AdminDashboardController::class)->name('dashboard');
 
     // CRUD Videojuegos (Admin)
     Route::resource('videojuegos', AdminVideoJuegoController::class);

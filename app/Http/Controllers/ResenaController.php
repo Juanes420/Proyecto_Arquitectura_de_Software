@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Resena;
 use App\Models\VideoJuego;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ResenaController extends Controller
 {
-    public function store(Request $request, VideoJuego $videojuego)
+    public function store(Request $request, VideoJuego $videojuego): RedirectResponse
     {
         $validated = $request->validate([
             'calificacion' => ['required', 'integer', 'min:1', 'max:5'],
@@ -35,7 +36,7 @@ class ResenaController extends Controller
         return back()->with('success', __('messages.resena_created'));
     }
 
-    public function update(Request $request, Resena $resena)
+    public function update(Request $request, Resena $resena): RedirectResponse
     {
         // Solo el dueño puede editar
         if ($resena->usuario_id !== Auth::id()) {
@@ -52,7 +53,7 @@ class ResenaController extends Controller
         return back()->with('success', __('messages.resena_updated'));
     }
 
-    public function destroy(Resena $resena)
+    public function destroy(Resena $resena): RedirectResponse
     {
         if ($resena->usuario_id !== Auth::id()) {
             abort(403);
