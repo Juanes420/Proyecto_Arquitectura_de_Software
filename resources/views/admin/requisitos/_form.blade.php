@@ -19,4 +19,14 @@
         <x-input :label="__('messages.almacenamiento')" name="almacenamiento" :value="$requisito->almacenamiento ?? null" :placeholder="__('messages.placeholder_storage')" required />
         <x-input :label="__('messages.directx')" name="directx" :value="$requisito->directx ?? null" :placeholder="__('messages.directx_placeholder')" />
     </div>
+
+    <div class="border-t border-line pt-6">
+        <h2 class="gv-label text-muted">{{ __('messages.requisitos_recomendados') }}</h2>
+        <p class="mt-1 text-xs text-muted">{{ __('messages.requisitos_recomendados_ayuda') }}</p>
+        <div class="mt-5 grid gap-6 sm:grid-cols-2">
+            @foreach(\App\Models\RequisitosMinimosPc::COMPONENTES as $componente)
+                <x-input :label="__('messages.' . $componente)" :name="$componente . '_recomendado'" :value="$requisito->{$componente . '_recomendado'} ?? null" />
+            @endforeach
+        </div>
+    </div>
 </div>

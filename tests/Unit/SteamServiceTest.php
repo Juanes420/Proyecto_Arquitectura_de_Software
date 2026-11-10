@@ -39,4 +39,20 @@ class SteamServiceTest extends TestCase
 
         $this->assertNull((new SteamService)->detalles(1));
     }
+
+    public function test_convierte_los_requisitos_html_de_steam_en_columnas(): void
+    {
+        $html = '<strong>Mínimo:</strong><br><ul class="bb_ul"><li><strong>SO *:</strong> Windows 10<br></li>'
+            . '<li><strong>Procesador:</strong> Intel Core i5-8400<br></li><li><strong>Memoria:</strong> 12 GB de RAM<br></li>'
+            . '<li><strong>Gráficos:</strong> NVIDIA GTX 1060 &amp; AMD RX 580<br></li><li><strong>Almacenamiento:</strong> 60 GB de espacio disponible</li>'
+            . '<li><strong>Tarjeta de sonido:</strong> Compatible</li></ul>';
+
+        $this->assertSame([
+            'sistema_operativo' => 'Windows 10',
+            'procesador' => 'Intel Core i5-8400',
+            'memoria_ram' => '12 GB de RAM',
+            'tarjeta_grafica' => 'NVIDIA GTX 1060 & AMD RX 580',
+            'almacenamiento' => '60 GB de espacio disponible',
+        ], (new SteamService)->requisitos($html));
+    }
 }

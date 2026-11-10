@@ -53,27 +53,7 @@
 </article>
 
 @if($videojuego->requisitosMinimosPC)
-    @php $req = $videojuego->requisitosMinimosPC; @endphp
-    <section class="mt-20" aria-labelledby="requisitos">
-        <h2 id="requisitos" class="text-2xl font-semibold tracking-[-0.02em]">{{ __('messages.requisitos') }}</h2>
-        <dl class="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
-            @foreach([
-                'sistema_operativo' => $req->sistema_operativo,
-                'procesador' => $req->procesador,
-                'memoria_ram' => $req->memoria_ram,
-                'tarjeta_grafica' => $req->tarjeta_grafica,
-                'almacenamiento' => $req->almacenamiento,
-                'directx' => $req->directx,
-            ] as $clave => $valor)
-                @if($valor)
-                    <div class="border-t border-line pt-4">
-                        <dt class="gv-label text-muted">{{ __('messages.' . $clave) }}</dt>
-                        <dd class="mt-2 text-[15px] text-ink">{{ $valor }}</dd>
-                    </div>
-                @endif
-            @endforeach
-        </dl>
-    </section>
+    @include('videojuegos._requisitos', ['requisitos' => $videojuego->requisitosMinimosPC])
 @endif
 
 @if($videojuego->dlcs->isNotEmpty())

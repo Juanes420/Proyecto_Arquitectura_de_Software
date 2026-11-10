@@ -27,6 +27,12 @@ class RequisitosMinimosPcRequest extends FormRequest
             'tarjeta_grafica' => ['required', 'string', 'max:255'],
             'almacenamiento' => ['required', 'string', 'max:255'],
             'directx' => ['nullable', 'string', 'max:255'],
+            'sistema_operativo_recomendado' => ['nullable', 'string', 'max:255'],
+            'procesador_recomendado' => ['nullable', 'string', 'max:255'],
+            'memoria_ram_recomendado' => ['nullable', 'string', 'max:255'],
+            'tarjeta_grafica_recomendado' => ['nullable', 'string', 'max:255'],
+            'almacenamiento_recomendado' => ['nullable', 'string', 'max:255'],
+            'directx_recomendado' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
