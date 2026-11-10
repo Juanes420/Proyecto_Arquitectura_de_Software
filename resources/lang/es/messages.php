@@ -194,4 +194,20 @@ return [
     'view_details' => 'Ver detalle',
     'free' => 'Gratis',
     'selected' => 'Seleccionado',
+
+    // Carrusel de inicio
+    'slide_new' => 'Recién llegado',
+    'slide_best_price' => 'Mejor precio',
+    'slide_price_text' => 'Disponible desde :precio. Uno de los mejores precios del catálogo.',
+    'slide_category' => 'Categoría destacada',
+    'slide_category_text' => ':total títulos en esta categoría.',
+    'view_game' => 'Ver juego',
+    'view_category' => 'Ver categoría',
+    'carousel_label' => 'Destacados',
+    'slide_previous' => 'Diapositiva anterior',
+    'slide_next' => 'Diapositiva siguiente',
+    'slide_go_to' => 'Ir a la diapositiva :numero',
+    'slide_position' => ':actual de :total',
+    'slideshow_pause' => 'Pausar',
+    'slideshow_play' => 'Reproducir',
 ];

@@ -45,6 +45,14 @@ class VideoJuego extends Model
         });
     }
 
+    // Arte horizontal para fondos amplios; en Steam es la ilustracion sin logo pensada para recortarse.
+    protected function fondoUrl(): Attribute
+    {
+        return Attribute::get(fn () => Str::endsWith((string) $this->imagen, 'library_600x900.jpg')
+            ? Str::replaceLast('library_600x900.jpg', 'library_hero.jpg', $this->imagen)
+            : $this->imagen_url);
+    }
+
     // ── Relaciones ──────────────────────────────────────
 
     public function categoria(): BelongsTo

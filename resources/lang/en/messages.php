@@ -194,4 +194,20 @@ return [
     'view_details' => 'View details',
     'free' => 'Free',
     'selected' => 'Selected',
+
+    // Carrusel de inicio
+    'slide_new' => 'Just added',
+    'slide_best_price' => 'Best price',
+    'slide_price_text' => 'Available from :precio. One of the best prices in the catalog.',
+    'slide_category' => 'Featured category',
+    'slide_category_text' => ':total titles in this category.',
+    'view_game' => 'View game',
+    'view_category' => 'View category',
+    'carousel_label' => 'Highlights',
+    'slide_previous' => 'Previous slide',
+    'slide_next' => 'Next slide',
+    'slide_go_to' => 'Go to slide :numero',
+    'slide_position' => ':actual of :total',
+    'slideshow_pause' => 'Pause',
+    'slideshow_play' => 'Play',
 ];

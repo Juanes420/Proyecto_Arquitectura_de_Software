@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\VideoJuego;
+use App\Services\PortadaService;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(PortadaService $portada): View
     {
+        $diapositivas = $portada->diapositivas();
         $destacados = VideoJuego::with('categoria')->enStock()->latest()->take(5)->get();
-        $portada = $destacados->firstWhere('imagen');
         $totalJuegos = VideoJuego::count();
 
-        return view('welcome', compact('destacados', 'portada', 'totalJuegos'));
+        return view('welcome', compact('diapositivas', 'destacados', 'totalJuegos'));
     }
 }
