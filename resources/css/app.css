@@ -42,8 +42,25 @@
     --gv-warning: #855700;
 }
 
+/* Oscuro: por eleccion del usuario (data-theme) o, si no eligio, segun el sistema. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --gv-canvas: #0f0f0e;
+    --gv-surface: #181817;
+    --gv-subtle: #242422;
+    --gv-ink: #edece8;
+    --gv-muted: #a09f99;
+    --gv-line: #2e2e2b;
+    --gv-line-strong: #4a4945;
+    --gv-accent: #6cc18c;
+    --gv-on-accent: #0f0f0e;
+    --gv-on-ink: #0f0f0e;
+    --gv-danger: #ec8a82;
+    --gv-warning: #e6b95c;
+}
+
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
         color-scheme: dark;
         --gv-canvas: #0f0f0e;
         --gv-surface: #181817;
@@ -193,6 +210,12 @@
         box-shadow: 0 0 0 2px var(--gv-ink);
         outline: none;
     }
+}
+
+/* Boton de tema: en claro se ve la luna (pasar a oscuro) y en oscuro el sol. */
+:root[data-theme="dark"] .gv-icono-claro,
+:root:not([data-theme="dark"]) .gv-icono-oscuro {
+    display: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {

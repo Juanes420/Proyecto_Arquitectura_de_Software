@@ -1,3 +1,39 @@
+{{-- Tema antes de pintar: la eleccion guardada o, si no hay, la del sistema. Evita el parpadeo al cargar. --}}
+<script>
+    (function () {
+        var raiz = document.documentElement;
+        var sistema = window.matchMedia('(prefers-color-scheme: dark)');
+        var guardado = null;
+        try { guardado = localStorage.getItem('gv-tema'); } catch (e) {}
+
+        function aplicar(tema) {
+            raiz.dataset.theme = tema;
+            document.querySelectorAll('meta[name="theme-color"]').forEach(function (meta) {
+                meta.content = tema === 'dark' ? '#0f0f0e' : '#eeede8';
+            });
+            document.querySelectorAll('[data-theme-toggle]').forEach(function (boton) {
+                boton.setAttribute('aria-pressed', String(tema === 'dark'));
+            });
+        }
+
+        aplicar(guardado === 'light' || guardado === 'dark' ? guardado : (sistema.matches ? 'dark' : 'light'));
+
+        window.gvCambiarTema = function () {
+            var nuevo = raiz.dataset.theme === 'dark' ? 'light' : 'dark';
+            try { localStorage.setItem('gv-tema', nuevo); } catch (e) {}
+            aplicar(nuevo);
+        };
+
+        document.addEventListener('DOMContentLoaded', function () { aplicar(raiz.dataset.theme); });
+
+        // Sin eleccion guardada, el tema sigue al sistema aunque cambie con la pagina abierta.
+        sistema.addEventListener('change', function (evento) {
+            var elegido = null;
+            try { elegido = localStorage.getItem('gv-tema'); } catch (e) {}
+            if (!elegido) { aplicar(evento.matches ? 'dark' : 'light'); }
+        });
+    })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">

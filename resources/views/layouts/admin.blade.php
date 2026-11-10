@@ -44,7 +44,10 @@
                     </form>
                     <div class="flex items-center justify-between gap-2 px-3 pt-3">
                         <span class="truncate text-sm text-muted">{{ auth()->user()->nombre }}</span>
-                        <x-locale-switcher />
+                        <div class="flex items-center gap-1">
+                            <x-theme-toggle />
+                            <x-locale-switcher />
+                        </div>
                     </div>
                 </div>
             </div>

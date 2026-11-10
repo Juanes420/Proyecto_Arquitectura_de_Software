@@ -73,11 +73,14 @@
                             </form>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="flex h-10 items-center px-2 text-sm text-muted hover:text-ink">{{ __('auth.login') }}</a>
+                        <a href="{{ route('login') }}" class="flex h-10 items-center whitespace-nowrap px-2 text-sm text-muted hover:text-ink">{{ __('auth.login') }}</a>
                         <x-button :href="route('register')" size="sm" class="self-start xl:self-auto">{{ __('auth.register') }}</x-button>
                     @endauth
 
-                    <x-locale-switcher class="mt-2 xl:ml-3 xl:mt-0" />
+                    <div class="mt-2 flex items-center gap-2 xl:ml-3 xl:mt-0">
+                        <x-theme-toggle />
+                        <x-locale-switcher />
+                    </div>
                 </div>
             </div>
         </div>
