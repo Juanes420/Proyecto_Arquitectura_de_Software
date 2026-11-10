@@ -49,6 +49,15 @@
                     <a href="{{ route('login') }}" class="hover:text-indigo-200">{{ __('auth.login') }}</a>
                     <a href="{{ route('register') }}" class="bg-white text-indigo-700 px-3 py-1 rounded hover:bg-indigo-100">{{ __('auth.register') }}</a>
                 @endauth
+
+                <div class="flex items-center gap-1 text-sm">
+                    @foreach(config('app.available_locales') as $idioma)
+                        <a href="{{ route('locale.update', $idioma) }}"
+                           class="px-2 py-1 rounded {{ app()->getLocale() === $idioma ? 'bg-white text-indigo-700 font-semibold' : 'hover:text-indigo-200' }}">
+                            {{ strtoupper($idioma) }}
+                        </a>
+                    @endforeach
+                </div>
             </div>
         </div>
     </nav>

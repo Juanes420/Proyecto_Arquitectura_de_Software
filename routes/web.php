@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\VideoJuegoController as AdminVideoJuegoController
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\JuegosGratisController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProductosAliadosController;
 use App\Http\Controllers\ResenaController;
@@ -18,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// ── Idioma ──────────────────────────────────────────────
+Route::get('/idioma/{locale}', [LocaleController::class, 'update'])->name('locale.update');
 
 // ── Autenticación ───────────────────────────────────────
 Route::middleware('guest')->group(function () {

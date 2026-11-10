@@ -8,6 +8,8 @@ return [
     'timezone' => 'America/Bogota',
     'locale' => 'es',
     'fallback_locale' => 'en',
+
+    'available_locales' => ['es', 'en'],
     'faker_locale' => 'es_CO',
     'cipher' => 'AES-256-CBC',
     'key' => env('APP_KEY'),
