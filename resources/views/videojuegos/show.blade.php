@@ -3,147 +3,155 @@
 @section('title', $videojuego->titulo . ' - GameVault')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <a href="{{ route('videojuegos.index') }}" class="text-indigo-600 hover:underline mb-4 inline-block">← {{ __('messages.back') }}</a>
+<a href="{{ route('videojuegos.index') }}" class="mb-6 inline-flex items-center gap-1.5 text-[13px] text-muted transition-colors duration-200 ease-console hover:text-ink">
+    <x-icon name="arrow-left" class="size-4" />
+    {{ __('messages.catalog') }}
+</a>
 
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="md:flex gap-6">
-            @if($videojuego->imagen)
-                <img src="{{ asset('storage/' . $videojuego->imagen) }}" alt="{{ $videojuego->titulo }}" class="w-full md:w-1/3 h-64 object-cover rounded-lg mb-4 md:mb-0">
-            @else
-                <div class="w-full md:w-1/3 h-64 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-6xl mb-4 md:mb-0">
-                    🎮
-                </div>
-            @endif
-            <div class="flex-1">
-                <h1 class="text-3xl font-bold">{{ $videojuego->titulo }}</h1>
-                <p class="text-gray-500 mt-1">{{ $videojuego->plataforma }} · {{ $videojuego->categoria->nombre }}</p>
-
-                <div class="mt-4 flex items-center gap-4">
-                    <span class="text-3xl font-bold text-green-600">${{ number_format($videojuego->precio, 2) }}</span>
-                    @if($videojuego->stock > 0)
-                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded">{{ $videojuego->stock }} {{ __('messages.en_stock') }}</span>
-                    @else
-                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded">{{ __('messages.agotado') }}</span>
-                    @endif
-                </div>
-
-                @if($videojuego->promedio_calificacion)
-                    <p class="mt-2 text-yellow-500 text-lg">⭐ {{ $videojuego->promedio_calificacion }}/5 ({{ $videojuego->resenas->count() }} {{ __('messages.resenas') }})</p>
-                @endif
-
-                @if($videojuego->descripcion)
-                    <p class="mt-4 text-gray-700">{{ $videojuego->descripcion }}</p>
-                @endif
-
-                {{-- Comprar (Bedoya) + Wishlist (Peña) --}}
-                <div class="mt-4 flex flex-wrap gap-2">
-                    @auth
-                        @if($videojuego->stock > 0)
-                            <a href="{{ route('pedidos.create', ['videojuego' => $videojuego->id]) }}"
-                               class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                                🛒 {{ __('messages.comprar') }}
-                            </a>
-                        @endif
-                    @endauth
-                    @include('wishlist._boton', ['videojuego' => $videojuego])
-                </div>
-            </div>
-        </div>
+<article class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14">
+    {{-- Marco doble: bandeja exterior y portada interior. --}}
+    <div class="self-start rounded-md border border-line bg-subtle p-1.5">
+        <x-cover :src="$videojuego->imagen ? asset('storage/' . $videojuego->imagen) : null" :alt="$videojuego->titulo"
+                 :eager="true" class="aspect-[4/5] rounded-[4px]" />
     </div>
 
-    {{-- Requisitos PC --}}
-    @if($videojuego->requisitosMinimosPC)
-        <div class="bg-white rounded-lg shadow p-6 mt-6">
-            <h2 class="text-xl font-bold mb-4">{{ __('messages.requisitos') }}</h2>
-            <div class="grid grid-cols-2 gap-3 text-sm">
-                @php $req = $videojuego->requisitosMinimosPC; @endphp
-                <div><span class="text-gray-500">SO:</span> {{ $req->sistema_operativo }}</div>
-                <div><span class="text-gray-500">CPU:</span> {{ $req->procesador }}</div>
-                <div><span class="text-gray-500">RAM:</span> {{ $req->memoria_ram }}</div>
-                <div><span class="text-gray-500">GPU:</span> {{ $req->tarjeta_grafica }}</div>
-                <div><span class="text-gray-500">Almacenamiento:</span> {{ $req->almacenamiento }}</div>
-                @if($req->directx)
-                    <div><span class="text-gray-500">DirectX:</span> {{ $req->directx }}</div>
-                @endif
-            </div>
-        </div>
-    @endif
+    <div class="flex flex-col">
+        <p class="text-sm text-muted">{{ $videojuego->plataforma }} · {{ $videojuego->categoria->nombre }}</p>
+        <h1 class="mt-2 text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-balance sm:text-5xl">{{ $videojuego->titulo }}</h1>
 
-    {{-- DLCs --}}
-    @if($videojuego->dlcs->count())
-        <div class="bg-white rounded-lg shadow p-6 mt-6">
-            <h2 class="text-xl font-bold mb-4">{{ __('messages.dlcs') }}</h2>
+        @if($videojuego->promedio_calificacion)
+            <p class="mt-4 flex items-center gap-2 text-sm text-muted">
+                <x-icon name="star" class="size-[18px] text-ink" />
+                <span class="font-mono tabular-nums text-ink">{{ __('messages.rating_out_of', ['value' => $videojuego->promedio_calificacion]) }}</span>
+                <span>({{ $videojuego->resenas->count() }} {{ __('messages.resenas') }})</span>
+            </p>
+        @endif
+
+        <div class="mt-8 flex flex-wrap items-center gap-4 border-y border-line py-6">
+            <x-price :value="$videojuego->precio" class="text-3xl font-medium tracking-[-0.02em]" />
+            @if($videojuego->stock > 0)
+                <x-badge color="success">{{ $videojuego->stock }} {{ __('messages.en_stock') }}</x-badge>
+            @else
+                <x-badge color="danger">{{ __('messages.agotado') }}</x-badge>
+            @endif
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+            @auth
+                @if($videojuego->stock > 0)
+                    <x-button :href="route('pedidos.create', ['videojuego' => $videojuego->id])" size="lg" icon="shopping-bag">
+                        {{ __('messages.comprar') }}
+                    </x-button>
+                @endif
+                @include('wishlist._boton', ['videojuego' => $videojuego])
+            @else
+                <x-button :href="route('login')" size="lg">{{ __('auth.login') }}</x-button>
+            @endauth
+        </div>
+
+        @if($videojuego->descripcion)
+            <p class="mt-8 max-w-[65ch] text-[15px] leading-relaxed text-ink/85">{{ $videojuego->descripcion }}</p>
+        @endif
+    </div>
+</article>
+
+@if($videojuego->requisitosMinimosPC)
+    @php $req = $videojuego->requisitosMinimosPC; @endphp
+    <section class="mt-20" aria-labelledby="requisitos">
+        <h2 id="requisitos" class="text-2xl font-semibold tracking-[-0.02em]">{{ __('messages.requisitos') }}</h2>
+        <dl class="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach([
+                'sistema_operativo' => $req->sistema_operativo,
+                'procesador' => $req->procesador,
+                'memoria_ram' => $req->memoria_ram,
+                'tarjeta_grafica' => $req->tarjeta_grafica,
+                'almacenamiento' => $req->almacenamiento,
+                'directx' => $req->directx,
+            ] as $clave => $valor)
+                @if($valor)
+                    <div class="border-t border-line pt-4">
+                        <dt class="gv-label text-muted">{{ __('messages.' . $clave) }}</dt>
+                        <dd class="mt-2 text-[15px] text-ink">{{ $valor }}</dd>
+                    </div>
+                @endif
+            @endforeach
+        </dl>
+    </section>
+@endif
+
+@if($videojuego->dlcs->isNotEmpty())
+    <section class="mt-20" aria-labelledby="dlcs">
+        <h2 id="dlcs" class="text-2xl font-semibold tracking-[-0.02em]">{{ __('messages.dlcs') }}</h2>
+        <ul class="mt-6 grid gap-4 sm:grid-cols-2">
             @foreach($videojuego->dlcs as $dlc)
-                <div class="flex justify-between items-center border-b last:border-0 py-3">
+                <li class="flex items-start justify-between gap-6 rounded-md border border-line bg-surface p-5">
                     <div>
                         <p class="font-medium">{{ $dlc->nombre }}</p>
                         @if($dlc->descripcion)
-                            <p class="text-gray-500 text-sm">{{ $dlc->descripcion }}</p>
+                            <p class="mt-1 text-sm leading-relaxed text-muted">{{ $dlc->descripcion }}</p>
                         @endif
                     </div>
-                    <span class="text-green-600 font-bold">${{ number_format($dlc->precio, 2) }}</span>
-                </div>
+                    <x-price :value="$dlc->precio" class="text-[15px]" />
+                </li>
             @endforeach
-        </div>
-    @endif
+        </ul>
+    </section>
+@endif
 
-    {{-- Reseñas --}}
-    <div class="bg-white rounded-lg shadow p-6 mt-6">
-        <h2 class="text-xl font-bold mb-4">{{ __('messages.resenas') }}</h2>
+<section class="mt-20 grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14" aria-labelledby="resenas">
+    <div>
+        <h2 id="resenas" class="text-2xl font-semibold tracking-[-0.02em]">{{ __('messages.resenas') }}</h2>
 
         @auth
-            @php
-                $miResena = $videojuego->resenas->where('usuario_id', auth()->id())->first();
-            @endphp
-
-            @if(!$miResena)
-                <form action="{{ route('resenas.store', $videojuego) }}" method="POST" class="bg-gray-50 rounded p-4 mb-6">
+            @unless($miResena)
+                <form action="{{ route('resenas.store', $videojuego) }}" method="POST" class="mt-6 flex flex-col gap-5 rounded-md border border-line bg-surface p-6">
                     @csrf
-                    <h3 class="font-medium mb-3">{{ __('messages.write_review') }}</h3>
-                    <div class="mb-3">
-                        <label class="block text-sm text-gray-600 mb-1">{{ __('messages.calificacion') }} *</label>
-                        <select name="calificacion" required class="border rounded px-3 py-2">
-                            @for($i = 5; $i >= 1; $i--)
-                                <option value="{{ $i }}">{{ str_repeat('⭐', $i) }} ({{ $i }})</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="block text-sm text-gray-600 mb-1">{{ __('messages.comentario') }}</label>
-                        <textarea name="comentario" rows="3" maxlength="1000" class="w-full border rounded px-3 py-2"></textarea>
-                    </div>
-                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">{{ __('messages.save') }}</button>
+                    <h3 class="text-base font-medium">{{ __('messages.write_review') }}</h3>
+                    <x-select :label="__('messages.calificacion')" name="calificacion" required>
+                        @for($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}" @selected((int) old('calificacion', 5) === $i)>{{ __('messages.rating_out_of', ['value' => $i]) }}</option>
+                        @endfor
+                    </x-select>
+                    <x-textarea :label="__('messages.comentario')" name="comentario" maxlength="1000" />
+                    <x-button class="self-start">{{ __('messages.save') }}</x-button>
                 </form>
-            @endif
+            @endunless
+        @else
+            <p class="mt-6 text-sm text-muted">
+                <a href="{{ route('login') }}" class="text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">{{ __('messages.login_to_review') }}</a>
+            </p>
         @endauth
+    </div>
 
+    <div>
         @forelse($videojuego->resenas as $resena)
-            <div class="border-b last:border-0 py-4">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <span class="font-medium">{{ $resena->usuario->nombre }}</span>
-                        <span class="text-yellow-500 ml-2">{{ str_repeat('⭐', $resena->calificacion) }}</span>
-                    </div>
-                    <span class="text-gray-400 text-sm">{{ $resena->created_at->diffForHumans() }}</span>
+            <div class="border-b border-line py-6 first:pt-0 last:border-0">
+                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                    <p class="font-medium">{{ $resena->usuario->nombre }}</p>
+                    <p class="text-xs text-muted">{{ $resena->created_at->diffForHumans() }}</p>
                 </div>
+                <p class="mt-1 flex items-center gap-1.5 text-sm text-muted">
+                    <x-icon name="star" class="size-4 text-ink" />
+                    <span class="font-mono tabular-nums">{{ __('messages.rating_out_of', ['value' => $resena->calificacion]) }}</span>
+                </p>
                 @if($resena->comentario)
-                    <p class="text-gray-600 mt-1">{{ $resena->comentario }}</p>
+                    <p class="mt-3 max-w-[65ch] text-[15px] leading-relaxed text-ink/85">{{ $resena->comentario }}</p>
                 @endif
 
-                @auth
-                    @if($resena->usuario_id === auth()->id())
-                        <form action="{{ route('resenas.destroy', $resena) }}" method="POST" class="mt-2 inline"
-                              onsubmit="return confirm('{{ __('messages.confirm_delete') }}')">
-                            @csrf @method('DELETE')
-                            <button class="text-red-500 text-sm hover:underline">{{ __('messages.delete') }}</button>
-                        </form>
-                    @endif
-                @endauth
+                @if($miResena && $resena->is($miResena))
+                    <form action="{{ route('resenas.destroy', $resena) }}" method="POST" class="mt-3"
+                          onsubmit="return confirm(@js(__('messages.confirm_delete')))">
+                        @csrf @method('DELETE')
+                        <button class="inline-flex cursor-pointer items-center gap-1.5 text-[13px] text-danger hover:underline">
+                            <x-icon name="trash" class="size-4" />
+                            {{ __('messages.delete') }}
+                        </button>
+                    </form>
+                @endif
             </div>
         @empty
-            <p class="text-gray-500">{{ __('messages.no_results') }}</p>
+            <x-empty-state icon="star" :title="__('messages.reviews_empty')" />
         @endforelse
     </div>
-</div>
+</section>
 @endsection
