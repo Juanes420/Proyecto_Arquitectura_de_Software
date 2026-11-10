@@ -1,53 +1,28 @@
 {{-- Partial reutilizable para create y edit (DRY) --}}
-<div class="mb-4">
-    <label for="titulo" class="block text-gray-700 font-medium mb-1">{{ __('messages.titulo') }} *</label>
-    <input type="text" name="titulo" id="titulo" value="{{ old('titulo', $videojuego->titulo ?? '') }}" required
-           class="w-full border rounded-lg px-3 py-2 @error('titulo') border-red-500 @enderror">
-    @error('titulo') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-</div>
+<div class="flex flex-col gap-6">
+    <p class="text-xs text-muted">{{ __('messages.required_fields') }}</p>
 
-<div class="grid grid-cols-2 gap-4 mb-4">
-    <div>
-        <label for="plataforma" class="block text-gray-700 font-medium mb-1">{{ __('messages.plataforma') }} *</label>
-        <select name="plataforma" id="plataforma" required class="w-full border rounded-lg px-3 py-2">
+    <x-input :label="__('messages.titulo')" name="titulo" :value="$videojuego->titulo ?? null" required maxlength="255" />
+
+    <div class="grid gap-6 sm:grid-cols-2">
+        <x-select :label="__('messages.plataforma')" name="plataforma" required>
             @foreach(['PC', 'PlayStation 5', 'PlayStation 4', 'Xbox Series X', 'Nintendo Switch'] as $plat)
-                <option value="{{ $plat }}" {{ old('plataforma', $videojuego->plataforma ?? '') === $plat ? 'selected' : '' }}>{{ $plat }}</option>
+                <option value="{{ $plat }}" @selected(old('plataforma', $videojuego->plataforma ?? '') === $plat)>{{ $plat }}</option>
             @endforeach
-        </select>
-    </div>
-    <div>
-        <label for="categoria_id" class="block text-gray-700 font-medium mb-1">{{ __('messages.categoria') }} *</label>
-        <select name="categoria_id" id="categoria_id" required class="w-full border rounded-lg px-3 py-2">
+        </x-select>
+        <x-select :label="__('messages.categoria')" name="categoria_id" required>
             @foreach($categorias as $cat)
-                <option value="{{ $cat->id }}" {{ old('categoria_id', $videojuego->categoria_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->nombre }}</option>
+                <option value="{{ $cat->id }}" @selected(old('categoria_id', $videojuego->categoria_id ?? '') == $cat->id)>{{ $cat->nombre }}</option>
             @endforeach
-        </select>
+        </x-select>
     </div>
-</div>
 
-<div class="grid grid-cols-2 gap-4 mb-4">
-    <div>
-        <label for="precio" class="block text-gray-700 font-medium mb-1">{{ __('messages.precio') }} *</label>
-        <input type="number" name="precio" id="precio" step="0.01" min="0" value="{{ old('precio', $videojuego->precio ?? '') }}" required
-               class="w-full border rounded-lg px-3 py-2 @error('precio') border-red-500 @enderror">
-        @error('precio') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+    <div class="grid gap-6 sm:grid-cols-2">
+        <x-input :label="__('messages.precio')" name="precio" type="number" step="0.01" min="0" inputmode="decimal" :value="$videojuego->precio ?? null" required />
+        <x-input :label="__('messages.stock')" name="stock" type="number" min="0" inputmode="numeric" :value="$videojuego->stock ?? 0" required />
     </div>
-    <div>
-        <label for="stock" class="block text-gray-700 font-medium mb-1">{{ __('messages.stock') }} *</label>
-        <input type="number" name="stock" id="stock" min="0" value="{{ old('stock', $videojuego->stock ?? 0) }}" required
-               class="w-full border rounded-lg px-3 py-2 @error('stock') border-red-500 @enderror">
-        @error('stock') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-    </div>
-</div>
 
-<div class="mb-4">
-    <label for="descripcion" class="block text-gray-700 font-medium mb-1">{{ __('messages.descripcion') }}</label>
-    <textarea name="descripcion" id="descripcion" rows="4"
-              class="w-full border rounded-lg px-3 py-2">{{ old('descripcion', $videojuego->descripcion ?? '') }}</textarea>
-</div>
+    <x-textarea :label="__('messages.descripcion')" name="descripcion" :value="$videojuego->descripcion ?? null" />
 
-<div class="mb-4">
-    <label for="imagen" class="block text-gray-700 font-medium mb-1">{{ __('messages.imagen') }}</label>
-    <input type="file" name="imagen" id="imagen" accept="image/*" class="w-full">
-    @error('imagen') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+    <x-input :label="__('messages.imagen')" name="imagen" type="file" accept="image/*" />
 </div>

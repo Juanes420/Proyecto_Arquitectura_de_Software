@@ -3,82 +3,42 @@
 
 @section('header', __('messages.manage_tarjetas'))
 
+@section('actions')
+    <x-button :href="route('admin.tarjetas.create')" icon="plus">{{ __('messages.create') }} {{ __('messages.tarjeta') }}</x-button>
+@endsection
+
 @section('content')
-<div class="mb-4">
-    <a href="{{ route('admin.tarjetas.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-        + {{ __('messages.create') }} {{ __('messages.tarjeta') }}
-    </a>
-</div>
-
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <table class="w-full text-left">
-        <thead class="bg-gray-50 border-b">
-            <tr>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.nombre') }}</th>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.plataforma') }}</th>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.precio') }}</th>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.stock') }}</th>
-                <th class="px-6 py-3 text-gray-600 font-medium">{{ __('messages.actions') }}</th>
-            </tr>
-        </thead>
-
-        <tbody class="divide-y">
-            @forelse($tarjetas as $tarjeta)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-medium">
-                        {{ $tarjeta->nombre }}
-                    </td>
-
-                    <td class="px-6 py-4 text-gray-600">
-                        {{ $tarjeta->plataforma }}
-                    </td>
-
-                    <td class="px-6 py-4">
-                        ${{ number_format($tarjeta->precio, 2) }}
-                    </td>
-
-                    <td class="px-6 py-4">
-                        <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-sm">
-                            {{ $tarjeta->stock }}
-                        </span>
-                    </td>
-
-                    <td class="px-6 py-4 flex gap-2">
-                        <a href="{{ route('admin.tarjetas.show', $tarjeta) }}"
-                           class="text-blue-600 hover:underline">
-                            {{ __('messages.view') }}
-                        </a>
-
-                        <a href="{{ route('admin.tarjetas.edit', $tarjeta) }}"
-                           class="text-yellow-600 hover:underline">
-                            {{ __('messages.edit') }}
-                        </a>
-
-                        <form action="{{ route('admin.tarjetas.destroy', $tarjeta) }}"
-                              method="POST"
-                              class="inline"
-                              onsubmit="return confirm('{{ __('messages.confirm_delete') }}')">
-                            @csrf
-                            @method('DELETE')
-
-                            <button class="text-red-600 hover:underline">
-                                {{ __('messages.delete') }}
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
+@if($tarjetas->isEmpty())
+    <x-empty-state icon="credit-card" :title="__('messages.no_results')" />
+@else
+    <x-card class="overflow-x-auto">
+        <table class="gv-table">
+            <thead>
                 <tr>
-                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">
-                        {{ __('messages.no_results') }}
-                    </td>
+                    <th scope="col">{{ __('messages.nombre') }}</th>
+                    <th scope="col">{{ __('messages.plataforma') }}</th>
+                    <th scope="col" class="text-right">{{ __('messages.precio') }}</th>
+                    <th scope="col" class="text-right">{{ __('messages.stock') }}</th>
+                    <th scope="col"><span class="sr-only">{{ __('messages.actions') }}</span></th>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach($tarjetas as $tarjeta)
+                    <tr>
+                        <td class="font-medium">{{ $tarjeta->nombre }}</td>
+                        <td class="whitespace-nowrap text-muted">{{ $tarjeta->plataforma }}</td>
+                        <td class="text-right"><x-price :value="$tarjeta->precio" /></td>
+                        <td class="text-right font-mono tabular-nums {{ $tarjeta->stock <= 0 ? 'text-danger' : '' }}">{{ $tarjeta->stock }}</td>
+                        <td>
+                            <x-row-actions :show="route('admin.tarjetas.show', $tarjeta)" :edit="route('admin.tarjetas.edit', $tarjeta)"
+                                           :destroy="route('admin.tarjetas.destroy', $tarjeta)" :nombre="$tarjeta->nombre" />
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </x-card>
 
-<div class="mt-4">
-    {{ $tarjetas->links() }}
-</div>
+    <div class="mt-8">{{ $tarjetas->links() }}</div>
+@endif
 @endsection
