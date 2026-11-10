@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 class VideoJuego extends Model
 {
@@ -31,6 +33,16 @@ class VideoJuego extends Model
             'precio' => 'decimal:2',
             'stock' => 'integer',
         ];
+    }
+
+    // La imagen puede ser una URL externa (Steam) o un archivo subido al disco publico.
+    protected function imagenUrl(): Attribute
+    {
+        return Attribute::get(fn () => match (true) {
+            ! $this->imagen => null,
+            Str::startsWith($this->imagen, ['http://', 'https://']) => $this->imagen,
+            default => asset('storage/' . $this->imagen),
+        });
     }
 
     // ── Relaciones ──────────────────────────────────────

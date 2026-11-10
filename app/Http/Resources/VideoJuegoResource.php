@@ -16,7 +16,7 @@ class VideoJuegoResource extends JsonResource
             'categoria' => $this->categoria?->nombre,
             'precio' => (float) $this->precio,
             'stock' => $this->stock,
-            'imagen' => $this->imagen ? asset('storage/'.$this->imagen) : null,
+            'imagen' => $this->imagen_url,
             'enlace' => route('videojuegos.show', $this->resource),
         ];
     }

@@ -1,7 +1,7 @@
 @props(['videojuego', 'large' => false])
 
 <a href="{{ route('videojuegos.show', $videojuego) }}" {{ $attributes->merge(['class' => 'gv-tile group flex flex-col bg-surface']) }}>
-    <x-cover :src="$videojuego->imagen ? asset('storage/' . $videojuego->imagen) : null" :alt="$videojuego->titulo"
+    <x-cover :src="$videojuego->imagen_url" :alt="$videojuego->titulo"
              class="rounded-t-md {{ $large ? 'aspect-[4/3] lg:aspect-auto lg:min-h-64 lg:flex-1' : 'aspect-[4/3]' }}" />
     <div class="flex {{ $large ? '' : 'flex-1' }} flex-col gap-1 border-x border-b border-line rounded-b-md p-4">
         <p class="text-[12px] text-muted">{{ $videojuego->plataforma }} · {{ $videojuego->categoria->nombre }}</p>

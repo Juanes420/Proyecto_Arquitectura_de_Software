@@ -21,7 +21,7 @@ if [ "$USUARIOS" = "0" ]; then
 fi
 
 php artisan storage:link --force 2>/dev/null || true
-php artisan juegos:asignar-imagenes || echo "==> No se pudieron asignar las imagenes"
+php artisan juegos:importar-steam || echo "==> No se pudieron importar los juegos de Steam"
 
 chown -R www-data:www-data storage bootstrap/cache
 

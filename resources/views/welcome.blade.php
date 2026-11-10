@@ -5,7 +5,7 @@
 @section('content')
 <section class="relative -mt-2 overflow-hidden rounded-md bg-[#161615]">
     @if($portada)
-        <img src="{{ asset('storage/' . $portada->imagen) }}" alt="" class="absolute inset-0 size-full object-cover opacity-70" fetchpriority="high">
+        <img src="{{ $portada->imagen_url }}" alt="" class="absolute inset-0 size-full object-cover opacity-70" fetchpriority="high">
     @endif
     <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" aria-hidden="true"></div>
 

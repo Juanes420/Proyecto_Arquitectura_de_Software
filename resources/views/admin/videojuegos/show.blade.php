@@ -10,7 +10,7 @@
 @section('content')
 <div class="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
     <div class="self-start rounded-md border border-line bg-subtle p-1.5">
-        <x-cover :src="$videojuego->imagen ? asset('storage/' . $videojuego->imagen) : null" :alt="$videojuego->titulo" class="aspect-[4/5] rounded-[4px]" />
+        <x-cover :src="$videojuego->imagen_url" :alt="$videojuego->titulo" class="aspect-[4/5] rounded-[4px]" />
     </div>
 
     <div class="flex flex-col gap-8">

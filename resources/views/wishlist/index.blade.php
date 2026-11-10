@@ -16,7 +16,7 @@
             @php $videojuego = $item->videojuego; @endphp
             <li class="flex flex-wrap items-center gap-5 py-5">
                 <a href="{{ route('videojuegos.show', $videojuego) }}" class="group shrink-0 rounded-md">
-                    <x-cover :src="$videojuego->imagen ? asset('storage/' . $videojuego->imagen) : null" :alt="$videojuego->titulo"
+                    <x-cover :src="$videojuego->imagen_url" :alt="$videojuego->titulo"
                              class="aspect-[4/3] w-28 rounded-md sm:w-36" />
                 </a>
                 <div class="min-w-0 flex-1">

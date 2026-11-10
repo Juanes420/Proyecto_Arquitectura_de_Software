@@ -5,12 +5,21 @@ namespace Database\Factories;
 use App\Models\Categoria;
 use App\Models\VideoJuego;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class VideoJuegoFactory extends Factory
 {
     protected $model = VideoJuego::class;
+
+    public const TITULOS = [
+        'Shadow of the Colossus', 'Neon Drift', 'Cyber Realm', 'Dragon Quest Legacy',
+        'Steel Horizon', 'Mystic Valley', 'Star Vanguard', 'Pixel Warriors',
+        'Frost Empire', 'Blade Runner 2099', 'Ocean Depths', 'Thunder Strike',
+        'Galaxy Wanderer', 'Crimson Blade', 'Wind Chaser', 'Dark Nexus',
+        'Iron Legion', 'Crystal Caverns', 'Void Walker', 'Ember Fall',
+        'Astral Gate', 'Rune Forge', 'Venom Strike', 'Titan Core',
+        'Phantom Edge', 'Solar Flare', 'Night Stalker', 'Arcane Pulse',
+        'Doom Spire', 'Echo Prime', 'Savage Lands', 'Quantum Rift',
+    ];
 
     private static array $descripciones = [
         'Un mundo abierto lleno de aventuras, misiones secundarias y secretos por descubrir en cada rincón del mapa.',
@@ -30,19 +39,9 @@ class VideoJuegoFactory extends Factory
     public function definition(): array
     {
         $plataformas = ['PC', 'PlayStation 5', 'Xbox Series X', 'Nintendo Switch', 'PlayStation 4'];
-        $titulos = [
-            'Shadow of the Colossus', 'Neon Drift', 'Cyber Realm', 'Dragon Quest Legacy',
-            'Steel Horizon', 'Mystic Valley', 'Star Vanguard', 'Pixel Warriors',
-            'Frost Empire', 'Blade Runner 2099', 'Ocean Depths', 'Thunder Strike',
-            'Galaxy Wanderer', 'Crimson Blade', 'Wind Chaser', 'Dark Nexus',
-            'Iron Legion', 'Crystal Caverns', 'Void Walker', 'Ember Fall',
-            'Astral Gate', 'Rune Forge', 'Venom Strike', 'Titan Core',
-            'Phantom Edge', 'Solar Flare', 'Night Stalker', 'Arcane Pulse',
-            'Doom Spire', 'Echo Prime', 'Savage Lands', 'Quantum Rift',
-        ];
 
         return [
-            'titulo' => fake()->unique()->randomElement($titulos),
+            'titulo' => fake()->unique()->randomElement(self::TITULOS),
             'plataforma' => fake()->randomElement($plataformas),
             'precio' => fake()->randomFloat(2, 9.99, 69.99),
             'stock' => fake()->numberBetween(0, 200),
@@ -50,16 +49,5 @@ class VideoJuegoFactory extends Factory
             'descripcion' => fake()->randomElement(self::$descripciones),
             'imagen' => null,
         ];
-    }
-
-    public function configure(): static
-    {
-        return $this->afterMaking(function (VideoJuego $juego) {
-            $ruta = 'videojuegos/' . Str::slug($juego->titulo) . '.png';
-
-            if (! $juego->imagen && Storage::disk('public')->exists($ruta)) {
-                $juego->imagen = $ruta;
-            }
-        });
     }
 }

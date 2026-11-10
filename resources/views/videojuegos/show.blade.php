@@ -11,7 +11,7 @@
 <article class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14">
     {{-- Marco doble: bandeja exterior y portada interior. --}}
     <div class="self-start rounded-md border border-line bg-subtle p-1.5">
-        <x-cover :src="$videojuego->imagen ? asset('storage/' . $videojuego->imagen) : null" :alt="$videojuego->titulo"
+        <x-cover :src="$videojuego->imagen_url" :alt="$videojuego->titulo"
                  :eager="true" class="aspect-[4/5] rounded-[4px]" />
     </div>
 
