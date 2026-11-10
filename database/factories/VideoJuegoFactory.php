@@ -5,6 +5,8 @@ namespace Database\Factories;
 use App\Models\Categoria;
 use App\Models\VideoJuego;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class VideoJuegoFactory extends Factory
 {
@@ -48,5 +50,16 @@ class VideoJuegoFactory extends Factory
             'descripcion' => fake()->randomElement(self::$descripciones),
             'imagen' => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (VideoJuego $juego) {
+            $ruta = 'videojuegos/' . Str::slug($juego->titulo) . '.png';
+
+            if (! $juego->imagen && Storage::disk('public')->exists($ruta)) {
+                $juego->imagen = $ruta;
+            }
+        });
     }
 }
