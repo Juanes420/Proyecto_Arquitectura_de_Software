@@ -1,0 +1,102 @@
+classDiagram
+    direction LR
+
+    class ProductosAliadosService {
+        <<interface>>
+        +obtener() array
+        +origen() string
+    }
+    class ProductosAliadosApi {
+        -string url
+        +obtener() array
+        +origen() string
+        -consultar() array
+        -normalizar(array item) array
+    }
+    class ProductosAliadosLocal {
+        +obtener() array
+        +origen() string
+    }
+    class ProductosAliadosController {
+        +index(ProductosAliadosService aliados) View
+    }
+    class FreeToGameService {
+        +populares(int limite) array
+        -consultar() array
+    }
+    class JuegosGratisController {
+        +index(FreeToGameService freeToGame) View
+    }
+    class PedidoService {
+        +crear(int usuarioId, array videojuegos, array tarjetas) Pedido
+        +cancelar(Pedido pedido) bool
+        -verificarStock(Model producto, int cantidad, string nombre) void
+    }
+    class PedidoController {
+        -PedidoService pedidos
+        +index() View
+        +create(Request request) View
+        +store(Request request) RedirectResponse
+        +show(Pedido pedido) View
+        +cancelar(Pedido pedido) RedirectResponse
+    }
+    class VideoJuegoApiController {
+        +index() AnonymousResourceCollection
+    }
+    class VideoJuegoResource {
+        +toArray(Request request) array
+    }
+    class VideoJuego {
+        +string titulo
+        +string plataforma
+        +decimal precio
+        +int stock
+        +scopeEnStock(Builder query) Builder
+    }
+    class Categoria {
+        +string nombre
+    }
+    class Pedido {
+        +datetime fecha
+        +string estado
+        +decimal total
+        +scopeDelUsuario(Builder query, int usuarioId) Builder
+        +perteneceA(int usuarioId) bool
+    }
+    class DetallePedido {
+        +int cantidad
+        +decimal precio_unit
+    }
+    class Tarjeta {
+        +string nombre
+        +decimal precio
+        +int stock
+        +scopeEnStock(Builder query) Builder
+    }
+    class User {
+        +string nombre
+        +string email
+        +string role
+    }
+    class Resena {
+        +int calificacion
+        +string comentario
+    }
+
+    ProductosAliadosApi ..|> ProductosAliadosService
+    ProductosAliadosLocal ..|> ProductosAliadosService
+    ProductosAliadosController --> ProductosAliadosService
+    JuegosGratisController --> FreeToGameService
+    PedidoController --> PedidoService
+    PedidoService --> Pedido
+    PedidoService --> VideoJuego
+    PedidoService --> Tarjeta
+    VideoJuegoApiController --> VideoJuego
+    VideoJuegoApiController --> VideoJuegoResource
+    Categoria "1" --> "*" VideoJuego
+    User "1" --> "*" Pedido
+    Pedido "1" --> "*" DetallePedido
+    DetallePedido "*" --> "0..1" VideoJuego
+    DetallePedido "*" --> "0..1" Tarjeta
+    VideoJuego "1" --> "*" Resena
+    User "1" --> "*" Resena
