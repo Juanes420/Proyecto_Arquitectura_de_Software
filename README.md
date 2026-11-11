@@ -1,6 +1,6 @@
 # GameVault
 
-Tienda virtual de videojuegos — Arquitectura de Software (EAFIT).
+Tienda virtual de videojuegos, DLC y tarjetas de regalo. Proyecto de Arquitectura de Software (EAFIT).
 
 - **App en producción:** https://proyecto-arquitectura-de-software.onrender.com
 - **API pública:** https://proyecto-arquitectura-de-software.onrender.com/api/videojuegos
