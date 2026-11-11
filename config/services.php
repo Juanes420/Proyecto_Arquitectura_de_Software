@@ -26,7 +26,7 @@ return [
     ],
     'aliados' => [
         'url' => env('ALIADOS_API_URL'),
-        'nombre' => env('ALIADOS_NOMBRE', 'Grupo 9'),
+        'nombre' => env('ALIADOS_NOMBRE', 'Tienda de muebles y decoración'),
     ],
 
 ];
