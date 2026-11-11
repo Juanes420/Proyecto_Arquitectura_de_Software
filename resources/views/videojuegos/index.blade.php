@@ -63,4 +63,12 @@
         {{ $videojuegos->withQueryString()->links() }}
     </div>
 @endif
+
+<p class="mt-10 text-[13px] text-muted">
+    {{ __('messages.catalogo_credito_steam') }}
+    <a href="https://store.steampowered.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
+        Steam
+        <x-icon name="arrow-up-right" class="size-3.5" />
+    </a>
+</p>
 @endsection

@@ -141,6 +141,7 @@ return [
     'juegos_gratis_no_disponible' => 'No pudimos cargar los juegos gratis en este momento. Intenta más tarde.',
     'jugar_gratis' => 'Jugar gratis',
     'datos_de' => 'Datos de',
+    'catalogo_credito_steam' => 'Nombres, descripciones, portadas y requisitos de los juegos obtenidos de',
 
     // Productos aliados (servicio del equipo anterior)
     'productos_aliados' => 'Productos aliados',
