@@ -141,6 +141,7 @@ return [
     'juegos_gratis_no_disponible' => 'No pudimos cargar los juegos gratis en este momento. Intenta más tarde.',
     'jugar_gratis' => 'Jugar gratis',
     'datos_de' => 'Datos de',
+    'catalogo_credito_steam' => 'Nombres, descripciones, portadas y requisitos de los juegos obtenidos de',
 
     // Productos aliados (servicio del equipo anterior)
     'productos_aliados' => 'Productos aliados',
@@ -159,6 +160,7 @@ return [
     'open_menu' => 'Abrir menú',
     'main_navigation' => 'Navegación principal',
     'admin_navigation' => 'Navegación del panel',
+    'breadcrumbs' => 'Ruta de navegación',
     'language' => 'Idioma',
     'back_to_site' => 'Volver a la tienda',
     'footer_tagline' => 'Videojuegos y tarjetas de regalo para todas las plataformas.',

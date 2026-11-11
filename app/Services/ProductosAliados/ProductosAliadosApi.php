@@ -54,7 +54,8 @@ class ProductosAliadosApi implements ProductosAliadosService
             return [];
         }
 
-        $items = $respuesta->json('data') ?? $respuesta->json();
+        // La lista puede venir sola o envuelta en "data" o "productos" (formato de la tienda de muebles).
+        $items = $respuesta->json('data') ?? $respuesta->json('productos') ?? $respuesta->json();
 
         return array_values(array_filter(array_map(
             fn ($item) => is_array($item) ? $this->normalizar($item) : null,
