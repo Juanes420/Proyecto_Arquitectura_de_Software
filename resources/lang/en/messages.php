@@ -278,4 +278,8 @@ return [
     'no_disponible' => 'Not available in this browser',
     'no_detectable' => 'Cannot be detected from the browser',
     'requiere_windows' => 'The game requires Windows',
+
+    // Estrellas
+    'calificar_con_estrellas' => 'Pick in half-star steps',
+    'sin_calificar' => 'Not rated',
 ];

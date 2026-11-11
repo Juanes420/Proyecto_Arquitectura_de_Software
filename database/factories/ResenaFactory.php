@@ -34,7 +34,7 @@ class ResenaFactory extends Factory
         return [
             'usuario_id' => User::factory(),
             'videojuego_id' => VideoJuego::factory(),
-            'calificacion' => fake()->numberBetween(1, 5),
+            'calificacion' => fake()->numberBetween(1, 10) / 2,
             'comentario' => fake()->randomElement(self::$comentarios),
         ];
     }

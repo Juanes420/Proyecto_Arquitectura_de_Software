@@ -23,7 +23,7 @@ class Resena extends Model
     protected function casts(): array
     {
         return [
-            'calificacion' => 'integer',
+            'calificacion' => 'float',
         ];
     }
 
@@ -54,5 +54,13 @@ class Resena extends Model
     public function perteneceA(int $usuarioId): bool
     {
         return $this->usuario_id === $usuarioId;
+    }
+
+    // 4.5 => "4,5" en espanol y "4.5" en ingles; sin decimal si es entero.
+    public static function formatear(?float $calificacion): string
+    {
+        $texto = rtrim(rtrim(number_format((float) $calificacion, 1, '.', ''), '0'), '.');
+
+        return app()->getLocale() === 'es' ? str_replace('.', ',', $texto) : $texto;
     }
 }

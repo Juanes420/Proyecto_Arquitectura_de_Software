@@ -278,4 +278,8 @@ return [
     'no_disponible' => 'No disponible en este navegador',
     'no_detectable' => 'No se puede detectar desde el navegador',
     'requiere_windows' => 'El juego requiere Windows',
+
+    // Estrellas
+    'calificar_con_estrellas' => 'Elige de media en media estrella',
+    'sin_calificar' => 'Sin calificar',
 ];

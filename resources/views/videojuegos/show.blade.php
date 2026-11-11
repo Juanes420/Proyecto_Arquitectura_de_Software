@@ -21,8 +21,8 @@
 
         @if($videojuego->promedio_calificacion)
             <p class="mt-4 flex items-center gap-2 text-sm text-muted">
-                <x-icon name="star" class="size-[18px] text-ink" />
-                <span class="font-mono tabular-nums text-ink">{{ __('messages.rating_out_of', ['value' => $videojuego->promedio_calificacion]) }}</span>
+                <x-stars :value="$videojuego->promedio_calificacion" size="size-[18px]" />
+                <span class="font-mono tabular-nums text-ink">{{ __('messages.rating_out_of', ['value' => \App\Models\Resena::formatear($videojuego->promedio_calificacion)]) }}</span>
                 <span>({{ $videojuego->resenas->count() }} {{ __('messages.resenas') }})</span>
             </p>
         @endif
@@ -76,11 +76,7 @@
                 <form action="{{ route('resenas.store', $videojuego) }}" method="POST" class="mt-6 flex flex-col gap-5 rounded-md border border-line bg-surface p-6">
                     @csrf
                     <h3 class="text-base font-medium">{{ __('messages.write_review') }}</h3>
-                    <x-select :label="__('messages.calificacion')" name="calificacion" required>
-                        @for($i = 5; $i >= 1; $i--)
-                            <option value="{{ $i }}" @selected((int) old('calificacion', 5) === $i)>{{ __('messages.rating_out_of', ['value' => $i]) }}</option>
-                        @endfor
-                    </x-select>
+                    <x-rating-input :label="__('messages.calificacion')" />
                     <x-textarea :label="__('messages.comentario')" name="comentario" maxlength="1000" />
                     <x-button class="self-start">{{ __('messages.save') }}</x-button>
                 </form>
@@ -100,8 +96,8 @@
                     <p class="text-xs text-muted">{{ $resena->created_at->diffForHumans() }}</p>
                 </div>
                 <p class="mt-1 flex items-center gap-1.5 text-sm text-muted">
-                    <x-icon name="star" class="size-4 text-ink" />
-                    <span class="font-mono tabular-nums">{{ __('messages.rating_out_of', ['value' => $resena->calificacion]) }}</span>
+                    <x-stars :value="$resena->calificacion" />
+                    <span class="font-mono tabular-nums">{{ __('messages.rating_out_of', ['value' => \App\Models\Resena::formatear($resena->calificacion)]) }}</span>
                 </p>
                 @if($resena->comentario)
                     <p class="mt-3 max-w-[65ch] text-[15px] leading-relaxed text-ink/85">{{ $resena->comentario }}</p>

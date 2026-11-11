@@ -20,6 +20,7 @@ return [
         'numeric' => 'El campo :attribute debe ser al menos :min.',
         'string' => 'El campo :attribute debe tener al menos :min caracteres.',
     ],
+    'multiple_of' => 'El campo :attribute debe ser múltiplo de :value.',
     'numeric' => 'El campo :attribute debe ser un número.',
     'required' => 'El campo :attribute es obligatorio.',
     'string' => 'El campo :attribute debe ser texto.',

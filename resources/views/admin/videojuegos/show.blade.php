@@ -58,7 +58,7 @@
                 <h2 class="flex flex-wrap items-center gap-3 text-lg font-semibold">
                     {{ __('messages.resenas') }}
                     <span class="inline-flex items-center gap-1 font-mono text-sm font-normal text-muted">
-                        <x-icon name="star" class="size-4" />{{ __('messages.rating_out_of', ['value' => $videojuego->promedio_calificacion]) }}
+                        <x-stars :value="$videojuego->promedio_calificacion" size="size-3.5" />{{ __('messages.rating_out_of', ['value' => \App\Models\Resena::formatear($videojuego->promedio_calificacion)]) }}
                     </span>
                 </h2>
                 <ul class="mt-3 divide-y divide-line rounded-md border border-line bg-surface">
@@ -66,7 +66,7 @@
                         <li class="px-4 py-3 text-sm">
                             <div class="flex justify-between gap-4">
                                 <span class="font-medium">{{ $resena->usuario->nombre }}</span>
-                                <span class="font-mono text-muted">{{ __('messages.rating_out_of', ['value' => $resena->calificacion]) }}</span>
+                                <span class="inline-flex items-center gap-1.5 font-mono text-muted"><x-stars :value="$resena->calificacion" size="size-3.5" />{{ __('messages.rating_out_of', ['value' => \App\Models\Resena::formatear($resena->calificacion)]) }}</span>
                             </div>
                             @if($resena->comentario)
                                 <p class="mt-1 leading-relaxed text-muted">{{ $resena->comentario }}</p>

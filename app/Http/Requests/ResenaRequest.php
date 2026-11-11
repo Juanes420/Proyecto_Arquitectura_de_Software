@@ -14,7 +14,7 @@ class ResenaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'calificacion' => ['required', 'integer', 'min:1', 'max:5'],
+            'calificacion' => ['required', 'numeric', 'min:0.5', 'max:5', 'multiple_of:0.5'],
             'comentario' => ['nullable', 'string', 'max:1000'],
         ];
     }
