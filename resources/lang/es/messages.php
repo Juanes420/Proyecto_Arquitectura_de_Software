@@ -160,6 +160,7 @@ return [
     'open_menu' => 'Abrir menú',
     'main_navigation' => 'Navegación principal',
     'admin_navigation' => 'Navegación del panel',
+    'breadcrumbs' => 'Ruta de navegación',
     'language' => 'Idioma',
     'back_to_site' => 'Volver a la tienda',
     'footer_tagline' => 'Videojuegos y tarjetas de regalo para todas las plataformas.',

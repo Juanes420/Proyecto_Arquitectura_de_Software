@@ -57,12 +57,17 @@
             <main id="contenido" class="gv-enter mx-auto max-w-6xl px-4 py-10 sm:px-8">
                 <div class="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
                     <div class="min-w-0">
-                        @hasSection('back')
-                            <a href="@yield('back')" class="mb-4 inline-flex items-center gap-1.5 text-[13px] text-muted transition-colors duration-200 ease-console hover:text-ink">
-                                <x-icon name="arrow-left" class="size-4" />
-                                {{ __('messages.back') }}
-                            </a>
-                        @endif
+                        @php
+                            // Resumen > Seccion (la URL de 'back' de cada vista) > Pagina actual.
+                            $migas = [['label' => __('messages.dashboard'), 'url' => route('admin.dashboard')]];
+                            if (View::hasSection('back')) {
+                                $migas[] = ['label' => __('messages.' . explode('.', Route::currentRouteName())[1]), 'url' => html_entity_decode(View::yieldContent('back'), ENT_QUOTES)];
+                            }
+                            if (! request()->routeIs('admin.dashboard')) {
+                                $migas[] = ['label' => html_entity_decode(View::yieldContent('header'), ENT_QUOTES), 'url' => null];
+                            }
+                        @endphp
+                        <x-breadcrumbs :items="$migas" />
                         <h1 class="text-3xl font-semibold tracking-[-0.025em] text-balance">@yield('header')</h1>
                     </div>
                     @hasSection('actions')

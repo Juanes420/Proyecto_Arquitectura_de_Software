@@ -160,6 +160,7 @@ return [
     'open_menu' => 'Open menu',
     'main_navigation' => 'Main navigation',
     'admin_navigation' => 'Admin navigation',
+    'breadcrumbs' => 'Breadcrumb',
     'language' => 'Language',
     'back_to_site' => 'Back to the store',
     'footer_tagline' => 'Video games and gift cards for every platform.',
